@@ -1,6 +1,6 @@
 export const ROOT_ROUTES = {
   AUTH: 'auth',
-  TABS: 'tabs'
+  SCREENS: 'screens'
 }
 
 

@@ -1,6 +1,6 @@
 import { View, Text, FlatList, Dimensions } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import { escuelaStyles as styles } from "../../../../utils/styles/escuelas";
+import { escuelaStyles as styles } from "../../../utils/styles/escuelas";
 import Button from "@components/Button";
 
 const { height } = Dimensions.get("window");
