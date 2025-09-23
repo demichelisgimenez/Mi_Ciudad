@@ -2,7 +2,7 @@ import { StyleSheet } from "react-native";
 import { sizes } from "../../utils";
 import { materialColors } from "@utils/colors";
 
-export const farmaciasStyles = StyleSheet.create({
+export const escuelaStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: materialColors.schemes.light.background,

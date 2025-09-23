@@ -7,6 +7,7 @@ import {useContext} from "react";
 import {AUTH_ACTIONS, AuthContext} from "@shared/context/AuthContext";
 import {materialColors} from "@utils/colors";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
+import EscuelasScreen from './screens/escuelas';
 
 
 
@@ -39,7 +40,7 @@ export default function TabsScreen() {
                       )
                     }}
         />
-        <Tab.Screen name={TAB_ROUTES.ESCUELAS} component={MyNetworkScreen} options={{
+        <Tab.Screen name={TAB_ROUTES.ESCUELAS} component={EscuelasScreen} options={{
           title: "Escuelas",
           tabBarIcon: ({color, size}) => (
               <MaterialCommunityIcons name="home" color={color} size={size}/>

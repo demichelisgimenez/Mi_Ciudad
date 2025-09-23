@@ -1,41 +1,39 @@
 import { View, Text, FlatList, Dimensions } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-import { farmaciasStyles as styles } from "../../../../utils/styles/farmacias";
+import { escuelaStyles as styles } from "../../../../utils/styles/escuelas";
 import Button from "@components/Button";
 
 const { height } = Dimensions.get("window");
 
-// 📌 Mock de farmacias en Federal (sin Supabase)
 const DATA = [
   {
     id: "1",
-    nombre: "Farmacia Federal",
-    direccion: "Belgrano 450",
+    nombre: 'Escuela Nina N° 2 "Justo José de Urquiza"',
+    direccion: "Presidente Peron 150",
     latitude: -30.9555,
     longitude: -58.7830,
   },
   {
     id: "2",
-    nombre: "Farmacia Del Pueblo",
-    direccion: "9 de Julio 210",
+    nombre: 'E.E.T. N° 23 "Caudillos Federales"',
+    direccion: "Rivadavia 275",
     latitude: -30.9560,
     longitude: -58.7850,
   },
   {
     id: "3",
-    nombre: "Farmacia Central",
-    direccion: "Antelo 320",
+    nombre: 'Escuela Secundaria N° 2 "José Manuel Estrada"',
+    direccion: "Echagüe 320",
     latitude: -30.9540,
     longitude: -58.7810,
   },
 ];
 
-export default function Farmacias() {
+export default function Escuelas() {
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>Farmacias en Federal</Text>
+      <Text style={styles.titulo}>Escuelas de la Ciudad de Federal</Text>
 
-      {/* 🗺️ Mapa centrado en Federal */}
       <MapView
         style={{ width: "100%", height: height * 0.3, borderRadius: 8 }}
         initialRegion={{
@@ -45,15 +43,15 @@ export default function Farmacias() {
           longitudeDelta: 0.01,
         }}
       >
-        {DATA.map((farmacia) => (
+        {DATA.map((escuela) => (
           <Marker
-            key={farmacia.id}
+            key={escuela.id}
             coordinate={{
-              latitude: farmacia.latitude,
-              longitude: farmacia.longitude,
+              latitude: escuela.latitude,
+              longitude: escuela.longitude,
             }}
-            title={farmacia.nombre}
-            description={farmacia.direccion}
+            title={escuela.nombre}
+            description={escuela.direccion}
           />
         ))}
       </MapView>
