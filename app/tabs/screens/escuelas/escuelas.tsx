@@ -35,7 +35,7 @@ export default function Escuelas() {
       <Text style={styles.titulo}>Escuelas de la Ciudad de Federal</Text>
 
       <MapView
-        style={{ width: "100%", height: height * 0.3, borderRadius: 8 }}
+        style={{ width: "100%", height: height * 0.3, borderRadius: 20, padding: 10 }}
         initialRegion={{
           latitude: -30.9546,
           longitude: -58.7833,
@@ -56,7 +56,6 @@ export default function Escuelas() {
         ))}
       </MapView>
 
-      {/* 📋 Lista de farmacias debajo del mapa */}
       <FlatList
         data={DATA}
         keyExtractor={(item) => item.id}

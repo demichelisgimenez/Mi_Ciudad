@@ -8,6 +8,8 @@ import {AUTH_ACTIONS, AuthContext} from "@shared/context/AuthContext";
 import {getUser} from "@utils/secure-store";
 import * as SplashScreen from 'expo-splash-screen';
 import {View} from "react-native";
+import DrawerNavigator from "./drawer";
+
 
 const Stack = createNativeStackNavigator()
 
@@ -40,7 +42,7 @@ export default function Root() {
             initialRouteName={isSignedIn ? ROOT_ROUTES.TABS : ROOT_ROUTES.AUTH} screenOptions={{headerShown: false}}>
           {
             isSignedIn ?
-                <Stack.Screen name={ROOT_ROUTES.TABS} component={TabsScreen}/>
+                <Stack.Screen name={ROOT_ROUTES.TABS} component={DrawerNavigator}/>
                 :
                 <Stack.Screen name={ROOT_ROUTES.AUTH} component={AuthStackScreen}/>
           }

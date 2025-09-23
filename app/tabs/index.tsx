@@ -1,13 +1,12 @@
 import {Pressable, Text, TouchableOpacity} from 'react-native';
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import {TAB_ROUTES} from "@utils/constants";
-import {InicioScreen, MyNetworkScreen, lista_farmacias} from "./screens";
+import {InicioScreen, Escuelas, Farmacias} from "./screens";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import {useContext} from "react";
 import {AUTH_ACTIONS, AuthContext} from "@shared/context/AuthContext";
 import {materialColors} from "@utils/colors";
 import {MaterialCommunityIcons} from "@expo/vector-icons";
-import EscuelasScreen from './screens/escuelas';
 
 
 
@@ -40,14 +39,14 @@ export default function TabsScreen() {
                       )
                     }}
         />
-        <Tab.Screen name={TAB_ROUTES.ESCUELAS} component={EscuelasScreen} options={{
+        <Tab.Screen name={TAB_ROUTES.ESCUELAS} component={Escuelas} options={{
           title: "Escuelas",
           tabBarIcon: ({color, size}) => (
               <MaterialCommunityIcons name="home" color={color} size={size}/>
           )
         }}/>
               
-        <Tab.Screen name={TAB_ROUTES.FARMACIAS} component={lista_farmacias} options={{
+        <Tab.Screen name={TAB_ROUTES.FARMACIAS} component={Farmacias} options={{
           title: "Farmacias",
           tabBarIcon: ({color, size}) => (
               <MaterialCommunityIcons name="home" color={color} size={size}/>

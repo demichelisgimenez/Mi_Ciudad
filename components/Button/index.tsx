@@ -24,7 +24,7 @@ export default function Button(props: IProps) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: materialColors.schemes.light.primary,
+    backgroundColor: materialColors.schemes.dark.primary,
     borderRadius: 8,
     padding: 12,
   },
@@ -32,6 +32,6 @@ const styles = StyleSheet.create({
     backgroundColor: materialColors.coreColors.neutral,
   },
   text: {
-    color: materialColors.schemes.light.onPrimary,
+    color: materialColors.schemes.dark.onPrimary,
   }
 })

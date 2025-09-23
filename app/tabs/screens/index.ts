@@ -1,5 +1,5 @@
 import InicioScreen from "./inicio";
-import MyNetworkScreen from './my-network';
-import lista_farmacias from "./farma/index";
+import Escuelas from './escuelas/index';
+import Farmacias from "./farma/index";
 
-export { InicioScreen, MyNetworkScreen, lista_farmacias };
+export { InicioScreen, Escuelas, Farmacias };
