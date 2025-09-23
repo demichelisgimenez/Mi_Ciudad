@@ -5,7 +5,6 @@ import Button from "@components/Button";
 
 const { height } = Dimensions.get("window");
 
-// 📌 Mock de farmacias en Federal (sin Supabase)
 const DATA = [
   {
     id: "1",
@@ -58,7 +57,6 @@ export default function Farmacias() {
         ))}
       </MapView>
 
-      {/* 📋 Lista de farmacias debajo del mapa */}
       <FlatList
         data={DATA}
         keyExtractor={(item) => item.id}
