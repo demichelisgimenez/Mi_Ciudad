@@ -33,9 +33,9 @@ export default function Login() {
         refreshToken: "REFRESH_TOKEN",
         user: {
           id: "ID",
-          nombre: "Franco",
-          apellido: "Ruis Dias",
-          email: "franco.ruisdias@uner.edu.ar"
+          nombre: "Agustin Enzo",
+          apellido: "Demichelis Gimenez",
+          email: "demichelisgimenez@gmail.com"
         }
       }
     })

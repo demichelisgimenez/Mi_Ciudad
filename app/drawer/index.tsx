@@ -1,31 +1,36 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { TAB_ROUTES } from "@utils/constants";
+import { DRAWER_ROUTES, AUTH_ROUTES } from "@utils/constants";
 
 import InicioScreen from "@app/screens/inicio";
-import { Farmacias, Escuelas } from "@app/screens";
-
-import Login from "@app/auth/screens/login";             
+import Farmacias from "@app/screens/farmacias";
+import Escuelas from "@app/screens/escuelas";
+import Radios from "@app/screens/radios";
+import Notas from "@app/screens/notas";
+import QR from "@app/screens/qr";
+import Ajustes from "@app/screens/ajustes";
+import Login from "@app/auth/screens/login";
 
 const Drawer = createDrawerNavigator();
 
 export default function DrawerNavigator() {
   return (
-    <Drawer.Navigator initialRouteName={TAB_ROUTES.INICIO}>
-
+    <Drawer.Navigator initialRouteName={DRAWER_ROUTES.INICIO}>
       <Drawer.Screen
-        name={TAB_ROUTES.INICIO}
+        name={DRAWER_ROUTES.INICIO}
         component={InicioScreen}
-        options={{ headerShown: false}}
+        options={{ headerShown: false }}
       />
-
-
-      <Drawer.Screen name={TAB_ROUTES.FARMACIAS} component={Farmacias} options={{ title: "Farmacias"}}/>
-      <Drawer.Screen name={TAB_ROUTES.ESCUELAS} component={Escuelas} options={{ title: "Escuelas" }}/>
-      <Drawer.Screen name={TAB_ROUTES.RADIOS}   component={Farmacias}    options={{ title: "Radios" }}/>
-      <Drawer.Screen name={TAB_ROUTES.NOTAS}    component={Escuelas}     options={{ title: "Notas" }}/>
-      <Drawer.Screen name="Ajustes"              component={Farmacias}   options={{ title: "Ajustes" }}/>
-      <Drawer.Screen name={TAB_ROUTES.QR}       component={Escuelas}        options={{ title: "QR" }}/>
-      <Drawer.Screen name={TAB_ROUTES.LOGIN}    component={Login}     options={{ title: "Login" }}/>
+      <Drawer.Screen name={DRAWER_ROUTES.FARMACIAS} component={Farmacias} />
+      <Drawer.Screen name={DRAWER_ROUTES.ESCUELAS} component={Escuelas} />
+      <Drawer.Screen name={DRAWER_ROUTES.RADIOS} component={Radios} />
+      <Drawer.Screen name={DRAWER_ROUTES.NOTAS} component={Notas} />
+      <Drawer.Screen name={DRAWER_ROUTES.QR} component={QR} />
+      <Drawer.Screen name={DRAWER_ROUTES.AJUSTES} component={Ajustes} />
+      <Drawer.Screen
+        name={AUTH_ROUTES.LOGIN}
+        component={Login}
+        options={{ title: "Login" }}
+      />
     </Drawer.Navigator>
   );
 }

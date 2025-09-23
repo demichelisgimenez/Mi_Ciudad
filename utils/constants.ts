@@ -9,12 +9,13 @@ export const AUTH_ROUTES = {
   REGISTER: 'register'
 }
 
-export const TAB_ROUTES = {
+export const DRAWER_ROUTES = {
   INICIO: 'Inicio',
   ESCUELAS: 'Escuelas',
   FARMACIAS: 'Farmacias',
   RADIOS: 'Radios',
   QR:'QR',
   LOGIN:'Login',
-  NOTAS:'Notas'
+  NOTAS:'Notas',
+  AJUSTES: 'Ajustes',
 }
