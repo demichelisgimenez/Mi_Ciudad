@@ -16,12 +16,12 @@ export const qrStyles = StyleSheet.create({
     padding: 20,
   },
   text: {
-    color: materialColors.schemes.light.onSurface, // texto claro
+    color: materialColors.schemes.light.onSurface,
     fontWeight: "bold",
     marginBottom: 5,
   },
   link: {
-    color: materialColors.schemes.light.primary, // usamos tu color primario
+    color: materialColors.schemes.light.primary,
     marginBottom: 10,
   },
 });

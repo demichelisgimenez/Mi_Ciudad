@@ -15,7 +15,6 @@ export default function Register() {
     <View style={styles.container}>
       <Text style={styles.title}>Crear cuenta</Text>
 
-      {/* Inputs */}
       <TextInput style={styles.input} placeholder="Nombre" editable={true} />
       <TextInput style={styles.input} placeholder="Apellido" editable={true} />
       <TextInput
@@ -25,7 +24,6 @@ export default function Register() {
         editable={true}
       />
 
-      {/* Contraseña con toggle */}
       <View style={[styles.input, { flexDirection: "row", alignItems: "center" }]}>
         <TextInput
           style={{ flex: 1 }}
@@ -42,12 +40,10 @@ export default function Register() {
         </TouchableOpacity>
       </View>
 
-      {/* Botón registrarse */}
       <TouchableOpacity style={styles.button} disabled={false}>
         <Text style={styles.buttonText}>Registrarse</Text>
       </TouchableOpacity>
 
-      {/* Botón volver al login */}
       <TouchableOpacity
         style={styles.linkButton}
         onPress={() => navigation.navigate(AUTH_ROUTES.LOGIN as never)}

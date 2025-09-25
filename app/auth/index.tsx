@@ -1,7 +1,7 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { AUTH_ROUTES } from "@utils/constants";
-import { Login, Register } from "./screens"; // 👈 importa desde screens/index.tsx
+import { Login, Register } from "./screens";
 
 export type AuthStackParamList = {
   Login: undefined;

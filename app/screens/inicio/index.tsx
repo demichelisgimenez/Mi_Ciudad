@@ -10,7 +10,7 @@ export default function InicioScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Clima */}
+
       <View style={styles.weatherCard}>
         <View>
           <Text style={styles.weatherTitle}>Clima en Federal</Text>
@@ -22,27 +22,25 @@ export default function InicioScreen() {
       <Text style={styles.title}>¿Qué querés hacer hoy?</Text>
 
       <View style={styles.grid}>
-        {/* Farmacias */}
+
         <TouchableOpacity
           style={styles.card}
           onPress={() => navigation.navigate(DRAWER_ROUTES.FARMACIAS as never)}
         >
           <MaterialIcons name="local-pharmacy" size={32} color="#fff" />
           <Text style={styles.cardTitle}>Farmacias</Text>
-          <Text style={styles.cardSubtitle}>Mapa y contacto</Text>
+          <Text style={styles.cardSubtitle}>Mapa y contactos</Text>
         </TouchableOpacity>
 
-        {/* Escuelas */}
         <TouchableOpacity
           style={styles.card}
           onPress={() => navigation.navigate(DRAWER_ROUTES.ESCUELAS as never)}
         >
           <MaterialIcons name="school" size={32} color="#fff" />
           <Text style={styles.cardTitle}>Escuelas</Text>
-          <Text style={styles.cardSubtitle}>Concursos y listado</Text>
+          <Text style={styles.cardSubtitle}>Mapa y listado</Text>
         </TouchableOpacity>
 
-        {/* Radios */}
         <TouchableOpacity
           style={styles.card}
           onPress={() => navigation.navigate(DRAWER_ROUTES.RADIOS as never)}
@@ -52,17 +50,15 @@ export default function InicioScreen() {
           <Text style={styles.cardSubtitle}>FM en vivo</Text>
         </TouchableOpacity>
 
-        {/* Notas */}
         <TouchableOpacity
           style={styles.card}
           onPress={() => navigation.navigate(DRAWER_ROUTES.NOTAS as never)}
         >
           <MaterialIcons name="note-alt" size={32} color="#fff" />
           <Text style={styles.cardTitle}>Notas</Text>
-          <Text style={styles.cardSubtitle}>Foto + recordatorio</Text>
+          <Text style={styles.cardSubtitle}>Notas personales</Text>
         </TouchableOpacity>
 
-        {/* QR */}
         <TouchableOpacity
           style={styles.card}
           onPress={() => navigation.navigate(DRAWER_ROUTES.QR as never)}
@@ -72,7 +68,6 @@ export default function InicioScreen() {
           <Text style={styles.cardSubtitle}>Escanear código</Text>
         </TouchableOpacity>
 
-        {/* Ajustes */}
         <TouchableOpacity
           style={styles.card}
           onPress={() => navigation.navigate(DRAWER_ROUTES.AJUSTES as never)}

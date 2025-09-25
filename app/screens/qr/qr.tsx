@@ -36,7 +36,7 @@ export default function QR() {
 
       {scanned && (
         <View style={styles.actions}>
-          <Text style={styles.text}>🔗 Link detectado:</Text>
+          <Text style={styles.text}>Link detectado:</Text>
           <Text style={styles.link}>{link}</Text>
 
           <Button title="Abrir link" onPress={() => link && Linking.openURL(link)} />

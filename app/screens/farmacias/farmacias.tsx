@@ -34,7 +34,6 @@ export default function Farmacias() {
     <View style={styles.container}>
       <Text style={styles.titulo}>Farmacias en Federal</Text>
 
-      {/* 🗺️ Mapa centrado en Federal */}
       <MapView
         style={{ width: "100%", height: height * 0.3, borderRadius: 8 }}
         initialRegion={{

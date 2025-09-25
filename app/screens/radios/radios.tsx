@@ -28,8 +28,6 @@ export default function RadiosScreen() {
         </Text>
         <Text style={styles.subtitle}>Federal, Entre Ríos</Text>
       </View>
-
-      {/* Radio Display */}
       <View style={styles.card}>
         <Text style={styles.frequency}>{currentStation.freq}</Text>
         <Text style={styles.stationName}>{currentStation.name}</Text>
@@ -40,8 +38,6 @@ export default function RadiosScreen() {
           </Text>
         </View>
       </View>
-
-      {/* Controls */}
       <View style={styles.controls}>
         <TouchableOpacity style={styles.controlBtn}>
           <Ionicons name="play-skip-back" size={28} color="black" />
@@ -62,8 +58,6 @@ export default function RadiosScreen() {
           <Ionicons name="play-skip-forward" size={28} color="black" />
         </TouchableOpacity>
       </View>
-
-      {/* Presets */}
       <View style={styles.presets}>
         <Text style={styles.presetsLabel}>Emisoras de Federal</Text>
         <View style={styles.presetGrid}>

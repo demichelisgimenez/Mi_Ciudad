@@ -44,7 +44,6 @@ export default function Login() {
         <Text style={styles.buttonText}>Ingresar</Text>
       </TouchableOpacity>
 
-      {/* Navegar a Register */}
       <TouchableOpacity
         style={styles.linkButton}
         onPress={() => navigation.navigate(AUTH_ROUTES.REGISTER as never)}
