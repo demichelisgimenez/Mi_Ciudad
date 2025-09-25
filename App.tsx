@@ -14,7 +14,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <StatusBar translucent backgroundColor="transparent" barStyle="dark-content" />
-      <SafeAreaView style={styles.container} edges={["top", "right", "left", "bottom"]}>
+      <SafeAreaView style={styles.container} edges={["right", "left", "bottom"]}>
         <NavigationContainer>
           <AuthProvider>
             <Root />
