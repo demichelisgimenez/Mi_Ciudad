@@ -1,9 +1,10 @@
+import { colors } from "@utils/colors";
 import { StyleSheet } from "react-native";
 
 export const radiosStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "linear-gradient(135deg, #667eea, #764ba2)", // ojo: en RN se hace con expo-linear-gradient
+    backgroundColor: colors.backgroundColor, 
     padding: 20,
   },
   header: {
@@ -13,20 +14,20 @@ export const radiosStyles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "white",
+    color: "rgba(25, 26, 105, 0.9)",
   },
   subtitle: {
     fontSize: 14,
-    color: "rgba(255,255,255,0.9)",
+    color: "rgba(22, 22, 22, 1)",
   },
   card: {
-    backgroundColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "rgba(15, 15, 15, 1)",
     borderRadius: 20,
     padding: 25,
     alignItems: "center",
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderColor: "rgba(5, 5, 5, 0.2)",
   },
   frequency: {
     fontSize: 48,
@@ -42,7 +43,7 @@ export const radiosStyles = StyleSheet.create({
   status: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(239,68,68,0.2)",
+    backgroundColor: "rgba(68, 199, 239, 0.2)",
     paddingVertical: 6,
     paddingHorizontal: 16,
     borderRadius: 20,
@@ -69,7 +70,7 @@ export const radiosStyles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(26, 25, 25, 0.11)",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
@@ -85,10 +86,10 @@ export const radiosStyles = StyleSheet.create({
   },
   playText: {
     fontSize: 28,
-    color: "white",
+    color: "black",
   },
   tuner: {
-    backgroundColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "rgba(211, 211, 211, 0.12)",
     borderRadius: 20,
     padding: 20,
     marginBottom: 20,
@@ -103,17 +104,17 @@ export const radiosStyles = StyleSheet.create({
     marginBottom: 20,
   },
   presets: {
-    backgroundColor: "rgba(255,255,255,0.15)",
+    backgroundColor: "rgba(223, 221, 221, 1)",
     borderRadius: 20,
     padding: 20,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderColor: "rgba(255, 255, 255, 0.12)",
   },
   presetsLabel: {
     fontSize: 16,
     fontWeight: "600",
     textAlign: "center",
-    color: "white",
+    color: "black",
     marginBottom: 20,
   },
   presetGrid: {
@@ -124,7 +125,7 @@ export const radiosStyles = StyleSheet.create({
   },
   presetBtn: {
     flexBasis: "48%",
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(22, 21, 21, 0.97)",
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: "center",
@@ -138,6 +139,6 @@ export const radiosStyles = StyleSheet.create({
   },
   presetName: {
     fontSize: 12,
-    color: "rgba(255,255,255,0.9)",
+    color: "rgba(255, 255, 255, 1)",
   },
 });

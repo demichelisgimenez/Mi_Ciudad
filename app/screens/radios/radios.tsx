@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { radiosStyles as styles } from "@utils/styles/radios";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function RadiosScreen() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -10,19 +11,21 @@ export default function RadiosScreen() {
   });
 
   const presets = [
-    { freq: 99.5, name: "FM Federal" },
-    { freq: 101.3, name: "Radio Uno" },
-    { freq: 95.7, name: "La Popular" },
-    { freq: 103.9, name: "FM Litoral" },
-    { freq: 97.1, name: "Radio Ciudad" },
-    { freq: 105.5, name: "FM Máxima" },
+    { freq: 99.9, name: "FM 100 Federal" },
+    { freq: 90.5, name: "Radio Integración" },
+    { freq: 96.9, name: "La Nueva del Chamamé" },
+    { freq: 97.9, name: "Radio Vida Federal" },
+    { freq: 102.1, name: "Radio Universo" },
+    { freq: 93.3, name: "Radio Venecia" },
   ];
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: "#667eea" }}>
+    <ScrollView style={{ flex: 1 }}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>📻 Radio FM</Text>
+        <Text style={styles.title}>
+          <Ionicons name="radio-outline" size={24} color="black" /> Radio FM
+        </Text>
         <Text style={styles.subtitle}>Federal, Entre Ríos</Text>
       </View>
 
@@ -41,16 +44,22 @@ export default function RadiosScreen() {
       {/* Controls */}
       <View style={styles.controls}>
         <TouchableOpacity style={styles.controlBtn}>
-          <Text style={styles.playText}>⏮️</Text>
+          <Ionicons name="play-skip-back" size={28} color="black" />
         </TouchableOpacity>
+
         <TouchableOpacity
           style={[styles.controlBtn, styles.playBtn]}
           onPress={() => setIsPlaying(!isPlaying)}
         >
-          <Text style={styles.playText}>{isPlaying ? "⏸️" : "▶️"}</Text>
+          {isPlaying ? (
+            <Ionicons name="pause" size={32} color="white" />
+          ) : (
+            <Ionicons name="play" size={32} color="white" />
+          )}
         </TouchableOpacity>
+
         <TouchableOpacity style={styles.controlBtn}>
-          <Text style={styles.playText}>⏭️</Text>
+          <Ionicons name="play-skip-forward" size={28} color="black" />
         </TouchableOpacity>
       </View>
 
@@ -73,4 +82,3 @@ export default function RadiosScreen() {
     </ScrollView>
   );
 }
-

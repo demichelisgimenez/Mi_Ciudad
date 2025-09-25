@@ -9,6 +9,7 @@ import Notas from "@app/screens/notas";
 import QR from "@app/screens/qr";
 import Ajustes from "@app/screens/ajustes";
 import Login from "@app/auth/screens/login";
+import { Register } from "@app/auth/screens";
 
 const Drawer = createDrawerNavigator();
 
@@ -29,7 +30,13 @@ export default function DrawerNavigator() {
       <Drawer.Screen
         name={AUTH_ROUTES.LOGIN}
         component={Login}
-        options={{ title: "Login" }}
+        options={{ title: "Iniciar Sesión" }}
+      />
+
+      <Drawer.Screen
+        name={AUTH_ROUTES.REGISTER}
+        component={Register}
+        options={{ title: "Registrarse", drawerItemStyle: { display: "none" }}}
       />
     </Drawer.Navigator>
   );

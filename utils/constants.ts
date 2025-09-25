@@ -1,13 +1,13 @@
 export const ROOT_ROUTES = {
-  AUTH: 'auth',
-  SCREENS: 'screens'
-}
+  AUTH: "Auth",
+  SCREENS: "Screens",
+} as const;
 
 
 export const AUTH_ROUTES = {
-  LOGIN: 'Login',
-  REGISTER: 'Register'
-}
+  LOGIN: "Login",
+  REGISTER: "Register",
+} as const;
 
 export const DRAWER_ROUTES = {
   INICIO: 'Inicio',

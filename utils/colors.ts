@@ -1,9 +1,9 @@
 export const colors = {
   backgroundColor: '#F5F5F5',
-  buttonColor: '#2196F3',
+  buttonColor: '#242627ff',
   primaryColor: '',
-  secondaryColor: '#03A9F4',
-  link: '#03A9F4'
+  secondaryColor: '#1a465aff',
+  link: '#268fc0ff'
 }
 
 export const materialColors = {
