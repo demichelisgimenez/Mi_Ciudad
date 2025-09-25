@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity } from "react-native";
 import { registerStyles as styles } from "@utils/styles/register";
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { AuthStackParamList } from "../index"; // 
+import type { AuthStackParamList } from "../index";
 export default function Register() {
   const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
 

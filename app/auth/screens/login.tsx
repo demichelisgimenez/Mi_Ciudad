@@ -23,7 +23,7 @@ export default function Login() {
 
       <TouchableOpacity
         style={styles.linkButton}
-        onPress={() => navigation.navigate('Register')}
+        onPress={() => navigation.navigate(AUTH_ROUTES.REGISTER)}
       >
         <Text style={styles.linkText}>¿No tenés cuenta? Registrate</Text>
       </TouchableOpacity>

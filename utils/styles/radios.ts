@@ -1,0 +1,143 @@
+import { StyleSheet } from "react-native";
+
+export const radiosStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "linear-gradient(135deg, #667eea, #764ba2)", // ojo: en RN se hace con expo-linear-gradient
+    padding: 20,
+  },
+  header: {
+    alignItems: "center",
+    marginBottom: 30,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "white",
+  },
+  subtitle: {
+    fontSize: 14,
+    color: "rgba(255,255,255,0.9)",
+  },
+  card: {
+    backgroundColor: "rgba(255,255,255,0.15)",
+    borderRadius: 20,
+    padding: 25,
+    alignItems: "center",
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+  },
+  frequency: {
+    fontSize: 48,
+    fontWeight: "bold",
+    color: "white",
+  },
+  stationName: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "white",
+    marginBottom: 10,
+  },
+  status: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(239,68,68,0.2)",
+    paddingVertical: 6,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+  },
+  statusDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 50,
+    marginRight: 6,
+    backgroundColor: "#ef4444",
+  },
+  statusText: {
+    color: "white",
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  controls: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 20,
+    marginBottom: 30,
+  },
+  controlBtn: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.3)",
+  },
+  playBtn: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: "rgba(34,197,94,0.3)",
+    borderWidth: 2,
+    borderColor: "rgba(34,197,94,0.5)",
+  },
+  playText: {
+    fontSize: 28,
+    color: "white",
+  },
+  tuner: {
+    backgroundColor: "rgba(255,255,255,0.15)",
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+  },
+  tunerLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
+    color: "white",
+    marginBottom: 20,
+  },
+  presets: {
+    backgroundColor: "rgba(255,255,255,0.15)",
+    borderRadius: 20,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+  },
+  presetsLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
+    color: "white",
+    marginBottom: 20,
+  },
+  presetGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    gap: 10,
+  },
+  presetBtn: {
+    flexBasis: "48%",
+    backgroundColor: "rgba(255,255,255,0.1)",
+    paddingVertical: 16,
+    borderRadius: 12,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
+  },
+  presetText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "white",
+  },
+  presetName: {
+    fontSize: 12,
+    color: "rgba(255,255,255,0.9)",
+  },
+});

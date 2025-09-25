@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { Text, View, Button, StyleSheet, Linking } from "react-native";
+import React, { useState } from "react";
+import { Text, View, Button } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
+import { qrStyles as styles } from "@utils/styles/qr";
+import { Linking } from "react-native";
 
 export default function QR() {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const [link, setLink] = useState<string | null>(null);
 
-  if (!permission) {
-    return <View />;
-  }
+  if (!permission) return <View />;
 
   if (!permission.granted) {
     return (
@@ -28,7 +28,7 @@ export default function QR() {
   return (
     <View style={styles.container}>
       <CameraView
-        style={StyleSheet.absoluteFillObject}
+        style={{ flex: 1 }}
         facing="back"
         barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
         onBarcodeScanned={({ data }) => !scanned && handleBarcodeScanned(data)}
@@ -46,28 +46,3 @@ export default function QR() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "flex-end",
-  },
-  center: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  actions: {
-    backgroundColor: "rgba(0,0,0,0.6)",
-    padding: 20,
-  },
-  text: {
-    color: "#fff",
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-  link: {
-    color: "#4fc3f7",
-    marginBottom: 10,
-  },
-});
