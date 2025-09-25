@@ -5,8 +5,8 @@ export const ROOT_ROUTES = {
 
 
 export const AUTH_ROUTES = {
-  LOGIN: 'login',
-  REGISTER: 'register'
+  LOGIN: 'Login',
+  REGISTER: 'Register'
 }
 
 export const DRAWER_ROUTES = {

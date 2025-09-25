@@ -1,120 +1,35 @@
-import {View, StyleSheet, Text, TextInput, TouchableOpacity, Platform, KeyboardAvoidingView} from "react-native";
-import {sizes} from "@utils/sizes";
-import {useContext, useEffect, useState} from "react";
-import Button from "@components/Button";
-import Link from "@components/Link";
-import {materialColors} from "@utils/colors";
-import {useNavigation} from "@react-navigation/native";
-import {AUTH_ROUTES} from "@utils/constants";
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import {AUTH_ACTIONS, AuthContext} from "@shared/context/AuthContext";
-
-
+import React from "react";
+import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { loginStyles as styles } from "@utils/styles/login";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { AuthStackParamList } from "../index"; 
+import {AUTH_ROUTES } from "@utils/constants";
 export default function Login() {
-  // const {onRegisterClicked} = props
-  const {state, dispatch} = useContext(AuthContext)
-  const navigation = useNavigation()
-  const [email, setEmail] = useState<string | undefined>(undefined)
-  const [pass, setPass] = useState<string | undefined>(undefined)
-  const [error, setError] = useState<string | undefined>(undefined)
-  const [isEnabled, setIsEnabled] = useState<boolean>(true)
-  const [showPass, setShowPass] = useState<boolean>(true)
-
-
-  const handleLogin = () => {
-
-    if (!pass || !email) {
-      setError('Debe completar ambos campos')
-      return;
-    }
-    dispatch({
-      type: AUTH_ACTIONS.LOGIN, payload: {
-        token: "TOKEN",
-        refreshToken: "REFRESH_TOKEN",
-        user: {
-          id: "ID",
-          nombre: "Agustin Enzo",
-          apellido: "Demichelis Gimenez",
-          email: "demichelisgimenez@gmail.com"
-        }
-      }
-    })
-    console.log(email, pass)
-  }
-
-  const handleGoToRegister = () => {
-
-    navigation.navigate(AUTH_ROUTES.REGISTER, {'name': 'register'})
-  }
-
-  useEffect(() => {
-    setIsEnabled(email !== undefined && pass !== undefined)
-  }, [email, pass])
+  const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
 
   return (
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={styles.container}>
-        <Text style={styles.titulo}>Bienvenido!</Text>
-        <TextInput
-            keyboardType={"email-address"}
-            style={styles.input}
-            placeholder="email"
-            value={email}
-            onChangeText={setEmail}
-        />
-        <View style={styles.passContainer}>
-          <TextInput
-              secureTextEntry={!showPass}
-              placeholder="contraseña"
-              value={pass}
-              onChangeText={setPass}
-          />
-          <TouchableOpacity onPress={() => setShowPass(!showPass)}>
-            <MaterialIcons name={showPass ? "visibility-off" : "visibility"} size={24} color="black"/>
-          </TouchableOpacity>
-        </View>
-        <Link link="Me olvide la contraseña" onPress={() => console.log("Me olvide la contraseña")}/>
-        {error && <Text style={styles.error}>{error}</Text>}
-        <View style={styles.divider}/>
-        <Button onPress={handleLogin} disabled={!isEnabled} title="Iniciar Sesion!"/>
-        <View style={styles.divider}/>
-        <Link link="Registrarse!" onPress={handleGoToRegister}/>
-      </KeyboardAvoidingView>
-  )
-}
+    <View style={styles.container}>
+      <Text style={styles.title}>Iniciar Sesión</Text>
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    backgroundColor: materialColors.schemes.light.surface,
-  },
-  titulo: {
-    fontSize: sizes.titulo,
-    fontWeight: 'bold',
-    color: materialColors.schemes.light.primary,
-  },
-  passContainer: {
-    height: 50,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-    borderBottomColor: materialColors.schemes.light.outline,
-    borderBottomWidth: 1,
-    minWidth: 300,
-  },
-  input: {
-    height: 50,
-    marginTop: 16,
-    borderBottomColor: materialColors.schemes.light.outline,
-    borderBottomWidth: 1,
-    minWidth: 300,
-  },
-  divider: {
-    height: 16
-  },
-  error: {
-    color: materialColors.schemes.light.error,
-    fontSize: 10
-  }
-})
+      {/* Inputs */}
+      <TextInput style={styles.input} placeholder="Usuario o email" editable={true} />
+      <TextInput style={styles.input} placeholder="Contraseña" secureTextEntry editable={true} />
+
+      {/* Botón ingresar */}
+      <TouchableOpacity style={styles.button} disabled={false}>
+        <Text style={styles.buttonText}>Ingresar</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.linkButton}
+        onPress={() => navigation.navigate('Register')}
+      >
+        <Text style={styles.linkText}>¿No tenés cuenta? Registrate</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.linkButton} disabled={true}>
+        <Text style={styles.linkText}>¿Olvidaste tu contraseña?</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}

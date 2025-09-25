@@ -1,30 +1,20 @@
-import {createNativeStackNavigator} from "@react-navigation/native-stack";
-import {AUTH_ROUTES} from "../../utils/constants";
-import {Login, Register} from "./screens";
-import {SafeAreaView} from "react-native-safe-area-context";
+import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Login from "./screens/login";
+import Register from "./screens/register";
 
-const Stack = createNativeStackNavigator()
+export type AuthStackParamList = {
+  Login: undefined;
+  Register: undefined;
+};
 
+const Stack = createNativeStackNavigator<AuthStackParamList>();
 
-export default function AuthStackScreen() {
-
-
+export default function AuthStack() {
   return (
-      <SafeAreaView style={{flex: 1}}>
-        <Stack.Navigator initialRouteName={AUTH_ROUTES.LOGIN} screenOptions={{headerShown: false}}>
-          <Stack.Screen name={AUTH_ROUTES.LOGIN} component={Login}
-                        options={{
-                          title: 'Iniciar Sesión'
-                        }}
-          />
-          <Stack.Screen name={AUTH_ROUTES.REGISTER} component={Register}
-                        options={{
-                          title: 'Registro',
-                          headerBackVisible: false,
-                          headerBackTitle: 'Volver'
-                        }}
-          />
-        </Stack.Navigator>
-      </SafeAreaView>
-  )
+    <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Register" component={Register} />
+    </Stack.Navigator>
+  );
 }

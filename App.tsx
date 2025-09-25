@@ -6,6 +6,7 @@ import { AuthProvider } from "./shared/context/AuthContext";
 import * as SplashScreen from 'expo-splash-screen';
 import React from "react";
 import { StatusBar, StyleSheet } from "react-native";
+import AuthStack from "./app/auth";
 
 // Mantener splash hasta que decidas esconderlo manualmente
 SplashScreen.preventAutoHideAsync();
