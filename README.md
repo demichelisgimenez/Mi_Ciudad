@@ -27,14 +27,14 @@ Diseñada para visualizar las instituciones educativas de la ciudad. Por ahora m
 Sección para listar radios FM locales. Próximamente incluirá la funcionalidad de reproducción en vivo.
 
 ### 📝 Notas
-Pantalla destinada a crear y organizar notas personales. Actualmente funciona como **mockup** con interfaz básica.
+Pantalla destinada a crear y organizar notas personales.
 
 ### 📷 QR
 **Funcional**: permite escanear un código QR y abrir directamente el enlace detectado.
 
 ### ⚙️ Ajustes
 Incluye:
-- **Cerrar sesión** (logout).
+- Recibir notificaciones.
 - Botón para cambiar entre **tema claro y oscuro**.  
 Ambos implementados como botones funcionales.
 
