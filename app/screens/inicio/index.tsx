@@ -11,7 +11,7 @@ export default function InicioScreen() {
   const navigation = useNavigation();
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+    <SafeAreaView style={{ flex: 1}} edges={["top"]}>
 
       <View style={styles.container}>
 
