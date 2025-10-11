@@ -1,5 +1,10 @@
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import { DRAWER_ROUTES, AUTH_ROUTES } from "@utils/constants";
+import React from "react";
+import { View, Text, TouchableOpacity } from "react-native";
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+
+import { DRAWER_ROUTES, ROOT_ROUTES, AUTH_ROUTES } from "@utils/constants";
+import { useAuth } from "@shared/context/AuthContext";
 
 import InicioScreen from "@app/screens/inicio";
 import Farmacias from "@app/screens/farmacias";
@@ -9,16 +14,64 @@ import Notas from "@app/screens/notas";
 import QR from "@app/screens/qr";
 import Ajustes from "@app/screens/ajustes";
 
-import Login from "@app/auth/screens/login";
-import Register from "@app/auth/screens/register";
-
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-
 const Drawer = createDrawerNavigator();
 
-export default function DrawerNavigator() {
+// --- Footer estado de usuario en el Drawer ---
+function UserStatusFooter({ navigation }: { navigation: any }) {
+  const { state } = useAuth();
+  const loggedIn = !!state?.user;
+
+  const onPress = () => {
+    if (loggedIn) {
+      // Si ya está logueado, lo llevo a Ajustes (o a su perfil si luego lo agregás)
+      navigation.navigate(DRAWER_ROUTES.AJUSTES as never);
+    } else {
+      // Si NO está logueado, lo llevo al AuthStack -> Login
+      navigation.navigate(
+        ROOT_ROUTES.AUTH as never,
+        { screen: AUTH_ROUTES.LOGIN } as never
+      );
+    }
+  };
+
   return (
-    <Drawer.Navigator initialRouteName={DRAWER_ROUTES.INICIO}>
+    <View style={{ borderTopWidth: 0.5, borderColor: "#ddd", marginTop: 8 }}>
+      <TouchableOpacity
+        onPress={onPress}
+        style={{ flexDirection: "row", alignItems: "center", padding: 16, gap: 12 }}
+      >
+        <MaterialIcons
+          name={loggedIn ? "account-circle" : "person-outline"}
+          size={22}
+          color={loggedIn ? "#2e7d32" : "#616161"}
+        />
+        <Text style={{ fontSize: 15 }}>
+          {loggedIn ? "Sesión iniciada" : "Iniciar sesión / Registrarme"}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+// --- Contenido personalizado del Drawer (lista + footer) ---
+function CustomDrawerContent(props: any) {
+  return (
+    <DrawerContentScrollView {...props}>
+      <DrawerItemList {...props} />
+      <UserStatusFooter navigation={props.navigation} />
+    </DrawerContentScrollView>
+  );
+}
+
+export default function DrawerNavigator({ route }: any) {
+  // Si el Root nos pasa una ruta inicial (p.ej. NOTAS post-login), la usamos; sino INICIO
+  const initial = route?.params?.initialRouteName ?? DRAWER_ROUTES.INICIO;
+
+  return (
+    <Drawer.Navigator
+      initialRouteName={initial}
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
+    >
       <Drawer.Screen
         name={DRAWER_ROUTES.INICIO}
         component={InicioScreen}
@@ -83,24 +136,10 @@ export default function DrawerNavigator() {
           ),
         }}
       />
-      <Drawer.Screen
-        name={AUTH_ROUTES.LOGIN}
-        component={Login}
-        options={{
-          title: "Iniciar Sesión",
-          drawerIcon: ({ color, size }) => (
-            <MaterialIcons name="login" size={size} color={color} />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name={AUTH_ROUTES.REGISTER}
-        component={Register}
-        options={{
-          title: "Registrarse",
-          drawerItemStyle: { display: "none" },
-        }}
-      />
+      {/*
+        Importante: NO agregamos LOGIN/REGISTER acá.
+        Están en el AuthStack del Root.
+      */}
     </Drawer.Navigator>
   );
 }

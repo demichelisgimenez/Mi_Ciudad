@@ -1,53 +1,92 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert } from "react-native";
 import { registerStyles as styles } from "@utils/styles/register";
-import { useNavigation } from "@react-navigation/native";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { AuthStackParamList } from "../index";
-import { AUTH_ROUTES } from "@utils/constants";
-import { Ionicons } from "@expo/vector-icons";
+
+import { useNavigation, CommonActions, NavigationProp, ParamListBase } from "@react-navigation/native";
+import { ROOT_ROUTES, DRAWER_ROUTES } from "@utils/constants";
+import { supabase } from "@utils/supabase";
 
 export default function Register() {
-  const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
-  const [showPass, setShowPass] = useState(false);
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
+
+  const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
+  const [email, setEmail] = useState("");
+  const [pass, setPass] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // 👉 Si hay sesión activa luego del signUp (depende de tu config),
+  // mandamos directo al Drawer con NOTAS como inicial.
+  function navigateToNotasAfterAuth() {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [
+          {
+            name: ROOT_ROUTES.SCREENS, // Drawer en el Root
+            params: { initialRouteName: DRAWER_ROUTES.NOTAS }, // abrir NOTAS
+          },
+        ],
+      })
+    );
+  }
+
+  const onRegister = async () => {
+    try {
+      if (!email || !pass) return Alert.alert("Ups", "Completá email y contraseña.");
+      setLoading(true);
+
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password: pass,
+        options: { data: { nombre, apellido } },
+      });
+      if (error) throw error;
+
+      // Si tu proyecto NO requiere confirmar email y deja sesión activa:
+      if (data.session) {
+        Alert.alert("¡Bienvenido!", "Cuenta creada y sesión iniciada.");
+        navigateToNotasAfterAuth();
+        return;
+      }
+
+      // Caso típico (requiere confirmar email):
+      Alert.alert("¡Listo!", "Revisá tu email para confirmar la cuenta.");
+      navigation.goBack(); // volvemos al login
+    } catch (e: any) {
+      Alert.alert("Error", e?.message ?? "No se pudo registrar.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Crear cuenta</Text>
 
-      <TextInput style={styles.input} placeholder="Nombre" editable={true} />
-      <TextInput style={styles.input} placeholder="Apellido" editable={true} />
+      <TextInput style={styles.input} placeholder="Nombre" value={nombre} onChangeText={setNombre} />
+      <TextInput style={styles.input} placeholder="Apellido" value={apellido} onChangeText={setApellido} />
       <TextInput
         style={styles.input}
         placeholder="Email"
+        autoCapitalize="none"
         keyboardType="email-address"
-        editable={true}
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Contraseña"
+        secureTextEntry
+        value={pass}
+        onChangeText={setPass}
       />
 
-      <View style={[styles.input, { flexDirection: "row", alignItems: "center" }]}>
-        <TextInput
-          style={{ flex: 1 }}
-          placeholder="Contraseña"
-          secureTextEntry={!showPass}
-          editable={true}
-        />
-        <TouchableOpacity onPress={() => setShowPass(!showPass)}>
-          <Ionicons
-            name={showPass ? "eye-off-outline" : "eye-outline"}
-            size={22}
-            color="gray"
-          />
-        </TouchableOpacity>
-      </View>
-
-      <TouchableOpacity style={styles.button} disabled={false}>
-        <Text style={styles.buttonText}>Registrarse</Text>
+      <TouchableOpacity style={styles.button} onPress={onRegister} disabled={loading}>
+        <Text style={styles.buttonText}>{loading ? "Registrando..." : "Registrarse"}</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.linkButton}
-        onPress={() => navigation.navigate(AUTH_ROUTES.LOGIN as never)}
-      >
+      <TouchableOpacity style={styles.linkButton} onPress={() => navigation.goBack()} disabled={loading}>
         <Text style={styles.linkText}>¿Ya tenés cuenta? Iniciá sesión</Text>
       </TouchableOpacity>
     </View>
