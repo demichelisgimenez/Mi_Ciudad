@@ -8,8 +8,9 @@ import Radios from "@app/screens/radios";
 import Notas from "@app/screens/notas";
 import QR from "@app/screens/qr";
 import Ajustes from "@app/screens/ajustes";
+
 import Login from "@app/auth/screens/login";
-import { Register } from "@app/auth/screens";
+import Register from "@app/auth/screens/register";
 
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
@@ -92,16 +93,12 @@ export default function DrawerNavigator() {
           ),
         }}
       />
-
       <Drawer.Screen
         name={AUTH_ROUTES.REGISTER}
         component={Register}
         options={{
           title: "Registrarse",
           drawerItemStyle: { display: "none" },
-          drawerIcon: ({ color, size }) => (
-            <MaterialIcons name="person-add" size={size} color={color} />
-          ),
         }}
       />
     </Drawer.Navigator>
