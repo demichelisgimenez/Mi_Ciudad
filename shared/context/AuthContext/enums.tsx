@@ -1,4 +1,3 @@
-// context/AuthContext/enums.ts
 export enum AUTH_ACTIONS {
   LOGIN = 'LOGIN',
   LOGOUT = 'LOGOUT',

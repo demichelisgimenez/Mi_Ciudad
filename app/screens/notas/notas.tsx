@@ -3,29 +3,24 @@ import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-nativ
 import { notasStyles as styles } from "@utils/styles/notas";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { RootStackParamList } from "@app/navigation/types";
 import { useAuth } from "@shared/context/AuthContext";
 import { ROOT_ROUTES, AUTH_ROUTES } from "@utils/constants";
 
 export default function Notas() {
   const { state } = useAuth();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  // Si NO hay usuario autenticado, mostramos prompt para login/registro
   if (!state?.user) {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Mis Notas</Text>
 
-        {/* Botones para Iniciar Sesión / Registrarme */}
         <View style={styles.inputContainer}>
           <TouchableOpacity
             style={styles.addButton}
-            onPress={() =>
-              navigation.navigate(
-                ROOT_ROUTES.AUTH as never,
-                { screen: AUTH_ROUTES.LOGIN } as never
-              )
-            }
+            onPress={() => navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.LOGIN })}
           >
             <Ionicons name="log-in-outline" size={20} color="white" />
             <Text style={styles.addButtonText}> Iniciar Sesión</Text>
@@ -33,12 +28,7 @@ export default function Notas() {
 
           <TouchableOpacity
             style={styles.addButton}
-            onPress={() =>
-              navigation.navigate(
-                ROOT_ROUTES.AUTH as never,
-                { screen: AUTH_ROUTES.REGISTER } as never
-              )
-            }
+            onPress={() => navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.REGISTER })}
           >
             <Ionicons name="person-add-outline" size={20} color="white" />
             <Text style={styles.addButtonText}> Registrarme</Text>
@@ -51,8 +41,6 @@ export default function Notas() {
       </View>
     );
   }
-
-  // Si HAY usuario autenticado, mostramos la UI de notas original
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Mis Notas</Text>
@@ -61,21 +49,21 @@ export default function Notas() {
         <TextInput
           style={styles.input}
           placeholder="Escribe una nota..."
-          editable={true}
+          editable
         />
-        <TouchableOpacity style={styles.addButton} disabled={false}>
+        <TouchableOpacity style={styles.addButton}>
           <Ionicons name="add-circle-outline" size={20} color="white" />
           <Text style={styles.addButtonText}> Agregar</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.inputContainer}>
-        <TouchableOpacity style={styles.addButton} disabled={false}>
+        <TouchableOpacity style={styles.addButton}>
           <Ionicons name="camera-outline" size={20} color="white" />
           <Text style={styles.addButtonText}> Cámara</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.addButton} disabled={false}>
+        <TouchableOpacity style={styles.addButton}>
           <Ionicons name="images-outline" size={20} color="white" />
           <Text style={styles.addButtonText}> Galería</Text>
         </TouchableOpacity>

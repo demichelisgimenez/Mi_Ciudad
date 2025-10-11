@@ -4,21 +4,23 @@ import { ajustesStyles as styles, switchColors } from "@utils/styles/ajustes";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@shared/context/AuthContext";
 import { supabase } from "@utils/supabase";
-import { useNavigation, NavigationProp, ParamListBase } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import type { RootStackParamList } from "@app/navigation/types";
 import { ROOT_ROUTES, AUTH_ROUTES } from "@utils/constants";
 
 type ThemeChoice = "blue" | "dark" | "light";
 
 export default function Ajustes() {
   const { state } = useAuth();
-  const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const [theme, setTheme] = useState<ThemeChoice>("blue");
   const [notifications, setNotifications] = useState<boolean>(true);
 
-const handleLogin = () => {
-  navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.LOGIN } as any);
-};
+  const handleLogin = () => {
+    navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.LOGIN });
+  };
 
   const handleLogout = async () => {
     try {
@@ -33,11 +35,7 @@ const handleLogin = () => {
   const ThemeOption = ({ label, value }: { label: string; value: ThemeChoice }) => {
     const isSelected = theme === value;
     return (
-      <TouchableOpacity
-        activeOpacity={0.9}
-        onPress={() => setTheme(value)}
-        style={styles.themeOption}
-      >
+      <TouchableOpacity activeOpacity={0.9} onPress={() => setTheme(value)} style={styles.themeOption}>
         <View
           style={[
             styles.themeDot,
@@ -56,7 +54,6 @@ const handleLogin = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Ajustes</Text>
 
-      {/* Card: Tema */}
       <View style={styles.card}>
         <View style={styles.cardHeaderRow}>
           <View style={styles.iconCircle}>
@@ -75,7 +72,6 @@ const handleLogin = () => {
         </View>
       </View>
 
-      {/* Card: Notificaciones */}
       <View style={styles.card}>
         <View style={styles.cardHeaderRow}>
           <View style={styles.iconCircle}>
@@ -96,7 +92,6 @@ const handleLogin = () => {
         </View>
       </View>
 
-      {/* Card: Sesión */}
       {state?.user ? (
         <TouchableOpacity activeOpacity={0.9} onPress={handleLogout} style={[styles.card, styles.logoutCard]}>
           <View style={styles.logoutRow}>

@@ -9,7 +9,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { supabase } from "@utils/supabase";
 
 export default function Login() {
-  // Usamos un Navigation genérico para poder resetear al Root (Drawer)
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const [showPass, setShowPass] = useState(false);
@@ -17,16 +16,14 @@ export default function Login() {
   const [pass, setPass] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 👉 cuando el login es exitoso, reseteamos navegación:
-  // volvemos al Root -> Drawer, y abrimos NOTAS como pantalla inicial del Drawer
   function navigateToNotasAfterAuth() {
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
         routes: [
           {
-            name: ROOT_ROUTES.SCREENS, // este es tu Drawer montado en el Root
-            params: { initialRouteName: DRAWER_ROUTES.NOTAS }, // Drawer arranca en NOTAS
+            name: ROOT_ROUTES.SCREENS,
+            params: { initialRouteName: DRAWER_ROUTES.NOTAS },
           },
         ],
       })
@@ -42,7 +39,7 @@ export default function Login() {
       if (error) throw error;
 
       Alert.alert("¡Bienvenido!", "Sesión iniciada.");
-      navigateToNotasAfterAuth(); // 👈 redirección
+      navigateToNotasAfterAuth();
     } catch (e: any) {
       Alert.alert("Error", e?.message ?? "No se pudo iniciar sesión.");
     } finally {

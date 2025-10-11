@@ -5,7 +5,6 @@ import { deleteUser, setUser } from "@utils/secure-store";
 import { supabase } from "@utils/supabase";
 import type { IUser } from "@shared/models";
 
-// ---- Tipos locales (siguen tu estructura previa) ----
 interface Action {
   type: AUTH_ACTIONS;
   payload?: any;
@@ -25,14 +24,12 @@ const initialState: State = {
   refreshToken: null,
 };
 
-// Mapea el usuario de Supabase a tu modelo IUser (ajustá campos si tu IUser tiene otros)
 function mapSupabaseUserToIUser(sUser: any): IUser {
   return {
     id: sUser?.id ?? "",
     email: sUser?.email ?? "",
     nombre: sUser?.user_metadata?.nombre ?? "",
     apellido: sUser?.user_metadata?.apellido ?? "",
-    // agrega aquí cualquier otro campo que tu IUser requiera
   } as IUser;
 }
 
@@ -76,9 +73,7 @@ const reducer = (prevState: State, action: Action): State => {
 const AuthProvider = (props: any) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  // 🔗 SINCRONIZA con Supabase al montar el provider y ante cualquier cambio de sesión
   useEffect(() => {
-    // 1) Sesión actual (por si ya estaba logueado)
     supabase.auth.getSession().then(({ data }) => {
       const session = data.session;
       if (session?.user) {
@@ -96,7 +91,6 @@ const AuthProvider = (props: any) => {
       }
     });
 
-    // 2) Listener de cambios de auth (login/logout/refresh)
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         const u = mapSupabaseUserToIUser(session.user);

@@ -15,16 +15,14 @@ export default function Register() {
   const [pass, setPass] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 👉 Si hay sesión activa luego del signUp (depende de tu config),
-  // mandamos directo al Drawer con NOTAS como inicial.
   function navigateToNotasAfterAuth() {
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
         routes: [
           {
-            name: ROOT_ROUTES.SCREENS, // Drawer en el Root
-            params: { initialRouteName: DRAWER_ROUTES.NOTAS }, // abrir NOTAS
+            name: ROOT_ROUTES.SCREENS,
+            params: { initialRouteName: DRAWER_ROUTES.NOTAS },
           },
         ],
       })
@@ -43,16 +41,14 @@ export default function Register() {
       });
       if (error) throw error;
 
-      // Si tu proyecto NO requiere confirmar email y deja sesión activa:
       if (data.session) {
         Alert.alert("¡Bienvenido!", "Cuenta creada y sesión iniciada.");
         navigateToNotasAfterAuth();
         return;
       }
 
-      // Caso típico (requiere confirmar email):
       Alert.alert("¡Listo!", "Revisá tu email para confirmar la cuenta.");
-      navigation.goBack(); // volvemos al login
+      navigation.goBack();
     } catch (e: any) {
       Alert.alert("Error", e?.message ?? "No se pudo registrar.");
     } finally {

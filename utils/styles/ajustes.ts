@@ -1,9 +1,6 @@
 import { StyleSheet } from "react-native";
 import { colors, sizes } from "@utils";
 
-/**
- * Exporto colores del Switch para que el .tsx no tenga literales.
- */
 export const switchColors = {
   thumbOn: colors.onAccent || "#ffffff",
   thumbOff: colors.onAccent || "#ffffff",
@@ -27,7 +24,6 @@ export const ajustesStyles = StyleSheet.create({
     marginBottom: sizes.base || 16,
   },
 
-  // ---------- Cards ----------
   card: {
     backgroundColor: colors.surface || "#ffffff",
     borderRadius: sizes.radius ? sizes.radius * 1.2 : 16,
@@ -78,7 +74,6 @@ export const ajustesStyles = StyleSheet.create({
     color: colors.textSecondary || "#6b7280",
   },
 
-  // ---------- Theme row ----------
   themeRow: {
     flexDirection: "row",
     justifyContent: "space-evenly",
@@ -100,7 +95,6 @@ export const ajustesStyles = StyleSheet.create({
     borderColor: "transparent",
   },
 
-  // Colores de cada opción
   themeDot_blue: {
     backgroundColor: colors.primary || "#3b82f6",
   },
@@ -113,7 +107,6 @@ export const ajustesStyles = StyleSheet.create({
     borderColor: colors.border || "#e5e7eb",
   },
 
-  // Estado seleccionado
   themeDotSelected: {
     borderColor: colors.selection || "#374151",
     transform: [{ scale: 1.08 }],
@@ -125,12 +118,10 @@ export const ajustesStyles = StyleSheet.create({
     color: colors.textMuted || "#4b5563",
   },
 
-  // ---------- Layout ----------
   flexSpacer: {
     flex: 1,
   },
 
-  // ---------- Logout / Login cards ----------
   logoutCard: {
     backgroundColor: colors.logoutBg || "#fef2f2",
     borderColor: colors.logoutBorder || "#fecaca",
