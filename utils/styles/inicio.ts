@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
-import { colors, sizes } from "@utils";
+import { sizes, colors } from "@utils";
+
 
 export const inicioStyles = StyleSheet.create({
   container: {
@@ -58,4 +59,6 @@ export const inicioStyles = StyleSheet.create({
     fontSize: sizes.sm || 12,
     color: colors.onPrimaryVariant || "#e0e0e0",
   },
+  safeArea: { flex: 1 },
+  icon: { color: "#fff" },
 });

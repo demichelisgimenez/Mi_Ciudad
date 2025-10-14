@@ -5,3 +5,4 @@ import { inicioStyles } from "./styles/inicio";
 import { qrStyles } from "./styles/qr";
 import { radiosStyles } from "./styles/radios";
 export { colors, sizes, farmaciasStyles, inicioStyles, qrStyles, radiosStyles};
+

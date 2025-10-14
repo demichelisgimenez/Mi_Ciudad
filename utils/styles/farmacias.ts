@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { sizes } from "../../utils";
+import { sizes } from "../../utils/sizes";
 import { materialColors } from "@utils/colors";
 
 export const farmaciasStyles = StyleSheet.create({

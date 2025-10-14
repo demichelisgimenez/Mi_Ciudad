@@ -1,85 +1,176 @@
-import React from "react";
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from "react-native";
-import { notasStyles as styles } from "@utils/styles/notas";
-import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import React, { useMemo, useCallback } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator,
+  RefreshControl,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useHeaderHeight } from "@react-navigation/elements";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { RootStackParamList } from "@app/navigation/types";
+
+import { notasStyles as styles } from "@utils/styles/notas";
+import { colors, sizes } from "@utils";
 import { useAuth } from "@shared/context/AuthContext";
 import { ROOT_ROUTES, AUTH_ROUTES } from "@utils/constants";
+import type { RootStackParamList } from "@app/navigation/types";
 
-export default function Notas() {
+import Button from "@components/Button";
+import { useNotes } from "./hooks/use-notes";
+import Composer from "./components/composer";
+import Card from "./components/card";
+import { pickImage } from "@utils/picker";
+import { EditState } from "./types";
+
+export default function NotasScreen() {
   const { state } = useAuth();
+  const userId = state?.user?.id ?? null;
+  const isLogged = !!userId;
+
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const headerHeight = useHeaderHeight();
+  const keyboardOffset =
+    Platform.select({ ios: headerHeight - 10, android: headerHeight - 10 }) ?? 0;
 
-  if (!state?.user) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Mis Notas</Text>
+  const {
+    notes,
+    loadingList,
+    refreshing,
+    onRefresh,
+    newTitle,
+    setNewTitle,
+    newDesc,
+    setNewDesc,
+    newImageUri,
+    setNewImageUri,
+    loadingCreate,
+    addNote,
+    editing,
+    setEditing,
+    startEdit,
+    cancelEdit,
+    saveEdit,
+    deleteNote,
+  } = useNotes(userId);
 
-        <View style={styles.inputContainer}>
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.LOGIN })}
-          >
-            <Ionicons name="log-in-outline" size={20} color="white" />
-            <Text style={styles.addButtonText}> Iniciar Sesión</Text>
-          </TouchableOpacity>
+  // refrescar al enfocar (útil después de login)
+  useFocusEffect(
+    useCallback(() => {
+      if (isLogged) onRefresh();
+    }, [isLogged, onRefresh])
+  );
 
-          <TouchableOpacity
-            style={styles.addButton}
-            onPress={() => navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.REGISTER })}
-          >
-            <Ionicons name="person-add-outline" size={20} color="white" />
-            <Text style={styles.addButtonText}> Registrarme</Text>
-          </TouchableOpacity>
-        </View>
+  const normalizedEditing: EditState = useMemo(() => editing, [editing]);
 
-        <View style={styles.inputContainer}>
-          <Text>Ingresá para crear y ver tus notas.</Text>
-        </View>
-      </View>
-    );
+  async function handleEditImagePick(kind: "camera" | "library") {
+    const uri = await pickImage(kind);
+    if (!uri) return;
+    setEditing((e) => (e ? { ...e, imageUri: uri } : e));
   }
+
+  // Intercepta marcas "PICK_*" que vienen desde Card
+  if (normalizedEditing && typeof normalizedEditing.imageUri === "string") {
+    if (normalizedEditing.imageUri === ("PICK_CAMERA" as any)) {
+      setEditing({ ...normalizedEditing, imageUri: undefined });
+      handleEditImagePick("camera");
+    } else if (normalizedEditing.imageUri === ("PICK_LIBRARY" as any)) {
+      setEditing({ ...normalizedEditing, imageUri: undefined });
+      handleEditImagePick("library");
+    }
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Mis Notas</Text>
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: colors.background }}
+      edges={["left", "right", "bottom"]} // 👈 sin "top" porque el header del Drawer ya empuja
+    >
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={keyboardOffset}
+      >
+        <View style={[styles.container, { flex: 1 }]}>
+          <Text style={styles.title}>Mis Notas</Text>
 
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Escribe una nota..."
-          editable
-        />
-        <TouchableOpacity style={styles.addButton}>
-          <Ionicons name="add-circle-outline" size={20} color="white" />
-          <Text style={styles.addButtonText}> Agregar</Text>
-        </TouchableOpacity>
-      </View>
+          {!isLogged ? (
+            <>
+              <View style={styles.authRow}>
+                <Button
+                  title="Iniciar Sesión"
+                  icon="log-in-outline"
+                  onPress={() =>
+                    navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.LOGIN })
+                  }
+                  fullWidth
+                  style={{ marginRight: sizes.sm || 8 }}
+                />
+                <Button
+                  title="Registrarme"
+                  icon="person-add-outline"
+                  variant="outline"
+                  onPress={() =>
+                    navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.REGISTER })
+                  }
+                  fullWidth
+                />
+              </View>
+              <Text>Ingresá para crear y ver tus notas.</Text>
+            </>
+          ) : (
+            <>
+              <Composer
+                title={newTitle}
+                setTitle={setNewTitle}
+                desc={newDesc}
+                setDesc={setNewDesc}
+                imageUri={newImageUri}
+                setImageUri={setNewImageUri}
+                loading={loadingCreate}
+                onAdd={addNote}
+                onPickCamera={async () => {
+                  const uri = await pickImage("camera");
+                  if (uri) setNewImageUri(uri);
+                }}
+                onPickLibrary={async () => {
+                  const uri = await pickImage("library");
+                  if (uri) setNewImageUri(uri);
+                }}
+              />
 
-      <View style={styles.inputContainer}>
-        <TouchableOpacity style={styles.addButton}>
-          <Ionicons name="camera-outline" size={20} color="white" />
-          <Text style={styles.addButtonText}> Cámara</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.addButton}>
-          <Ionicons name="images-outline" size={20} color="white" />
-          <Text style={styles.addButtonText}> Galería</Text>
-        </TouchableOpacity>
-      </View>
-
-      <ScrollView style={styles.notesList}>
-        <View style={styles.noteCard}>
-          <Text style={styles.noteText}>Comprar pan</Text>
+              <ScrollView
+                style={styles.notesList}
+                contentContainerStyle={[styles.notesListContent, { flexGrow: 1 }]}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+              >
+                {loadingList ? (
+                  <ActivityIndicator />
+                ) : notes.length === 0 ? (
+                  <Text style={styles.emptyText}>No tenés notas todavía.</Text>
+                ) : (
+                  notes.map((n) => (
+                    <Card
+                      key={n.id}
+                      note={n}
+                      editing={editing}
+                      startEdit={startEdit}
+                      cancelEdit={cancelEdit}
+                      saveEdit={saveEdit}
+                      setEditing={setEditing}
+                      deleteNote={deleteNote}
+                    />
+                  ))
+                )}
+              </ScrollView>
+            </>
+          )}
         </View>
-        <View style={styles.noteCard}>
-          <Text style={styles.noteText}>Ir a la Farmacia</Text>
-        </View>
-        <View style={styles.noteCard}>
-          <Text style={styles.noteText}>Realizar evaluaciones</Text>
-        </View>
-      </ScrollView>
-    </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
