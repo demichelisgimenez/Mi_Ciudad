@@ -1,24 +1,26 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useRef, useState } from "react";
 import {
   View,
   Text,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
   RefreshControl,
+  Animated,
+  LayoutChangeEvent,
+  StyleSheet,
+  ListRenderItemInfo,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-
+import Screen from "@app/screens/components/Screen";
 import { notasStyles as styles } from "@utils/styles/notas";
 import { colors, sizes } from "@utils";
+import { useResponsive } from "@utils/responsive";
 import { useAuth } from "@shared/context/AuthContext";
 import { ROOT_ROUTES, AUTH_ROUTES } from "@utils/constants";
 import type { RootStackParamList } from "@app/navigation/types";
-
 import Button from "@components/Button";
 import { useNotes } from "./hooks/use-notes";
 import Composer from "./components/composer";
@@ -26,11 +28,13 @@ import Card from "./components/card";
 import { pickImage } from "@utils/picker";
 import { EditState } from "./types";
 
+type NoteItem = any;
+
 export default function NotasScreen() {
+  const r = useResponsive();
   const { state } = useAuth();
   const userId = state?.user?.id ?? null;
   const isLogged = !!userId;
-
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const headerHeight = useHeaderHeight();
   const keyboardOffset =
@@ -81,45 +85,97 @@ export default function NotasScreen() {
     }
   }
 
+  const scrollY = useRef(new Animated.Value(0)).current;
+  const [headerMeasuredH, setHeaderMeasuredH] = useState(0);
+  const listRef = useRef<Animated.FlatList<NoteItem>>(null);
+  const [scrollPos, setScrollPos] = useState(0);
+
+  const [visibleCount, setVisibleCount] = useState(12);
+  const pageStep = 10;
+  const slicedData = (loadingList ? [] : notes).slice(0, visibleCount);
+  const canShowMore = !loadingList && visibleCount < (notes?.length || 0);
+
+  const onHeaderLayout = (e: LayoutChangeEvent) => {
+    const h = e.nativeEvent.layout.height || 0;
+    if (Math.abs(h - headerMeasuredH) > 1) setHeaderMeasuredH(h);
+  };
+
+  const headerTranslateY = scrollY.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -Math.max(headerMeasuredH, 1)],
+    extrapolate: "clamp",
+  });
+
+  const contentPadTop = headerMeasuredH;
+
+  const renderItem = ({ item }: ListRenderItemInfo<NoteItem>) => (
+    <Card
+      note={item}
+      editing={editing}
+      startEdit={startEdit}
+      cancelEdit={cancelEdit}
+      saveEdit={saveEdit}
+      setEditing={setEditing}
+      deleteNote={deleteNote}
+    />
+  );
+
   return (
-    <SafeAreaView
-      style={{ flex: 1, backgroundColor: colors.background }}
-      edges={["left", "right", "bottom"]}
-    >
+    <Screen edges={["left", "right", "bottom"]} centerContent>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={keyboardOffset}
       >
         <View style={[styles.container, { flex: 1 }]}>
-          <Text style={styles.title}>Mis Notas</Text>
+          <Animated.View
+            onLayout={onHeaderLayout}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              zIndex: 10,
+              transform: [{ translateY: headerTranslateY }],
+              backgroundColor: colors.background,
+              paddingBottom: r.isLandscape ? 8 : 12,
+              borderBottomWidth: StyleSheet.hairlineWidth,
+              borderBottomColor: (colors as any)?.border || "#ddd",
+            }}
+          >
+            <Text style={[styles.title, { fontSize: r.titleSize, marginBottom: r.isLandscape ? 8 : 12 }]}>
+              Mis Notas
+            </Text>
 
-          {!isLogged ? (
-            <>
-              <View style={styles.authRow}>
-                <Button
-                  title="Iniciar Sesión"
-                  icon="log-in-outline"
-                  onPress={() =>
-                    navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.LOGIN })
-                  }
-                  fullWidth
-                  style={{ marginRight: sizes.sm || 8 }}
-                />
-                <Button
-                  title="Registrarme"
-                  icon="person-add-outline"
-                  variant="outline"
-                  onPress={() =>
-                    navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.REGISTER })
-                  }
-                  fullWidth
-                />
-              </View>
-              <Text>Ingresá para crear y ver tus notas.</Text>
-            </>
-          ) : (
-            <>
+            {!isLogged ? (
+              <>
+                <View style={[styles.authRow, { marginBottom: r.isLandscape ? 12 : 16 }]}>
+                  <View style={styles.authBtn}>
+                    <Button
+                      title="Iniciar Sesión"
+                      icon="log-in-outline"
+                      onPress={() =>
+                        navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.LOGIN })
+                      }
+                      fullWidth
+                      style={{ marginRight: 8 }}
+                    />
+                  </View>
+                  <View style={styles.authBtn}>
+                    <Button
+                      title="Registrarme"
+                      icon="person-add-outline"
+                      variant="outline"
+                      onPress={() =>
+                        navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.REGISTER })
+                      }
+                      fullWidth
+                    />
+                  </View>
+                </View>
+                <Text>Ingresá para crear y ver tus notas.</Text>
+              </>
+            ) : (
               <Composer
                 title={newTitle}
                 setTitle={setNewTitle}
@@ -138,37 +194,72 @@ export default function NotasScreen() {
                   if (uri) setNewImageUri(uri);
                 }}
               />
+            )}
+          </Animated.View>
 
-              <ScrollView
-                style={styles.notesList}
-                contentContainerStyle={[styles.notesListContent, { flexGrow: 1 }]}
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled"
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-              >
-                {loadingList ? (
-                  <ActivityIndicator />
-                ) : notes.length === 0 ? (
-                  <Text style={styles.emptyText}>No tenés notas todavía.</Text>
-                ) : (
-                  notes.map((n) => (
-                    <Card
-                      key={n.id}
-                      note={n}
-                      editing={editing}
-                      startEdit={startEdit}
-                      cancelEdit={cancelEdit}
-                      saveEdit={saveEdit}
-                      setEditing={setEditing}
-                      deleteNote={deleteNote}
-                    />
-                  ))
-                )}
-              </ScrollView>
-            </>
+          <Animated.FlatList
+            ref={listRef}
+            data={slicedData}
+            keyExtractor={(item: any) => String(item.id)}
+            renderItem={renderItem}
+            style={styles.notesList}
+            contentContainerStyle={[
+              styles.notesListContent,
+              { paddingTop: contentPadTop, paddingBottom: 0 },
+            ]}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            ListEmptyComponent={
+              !loadingList ? <Text style={styles.emptyText}>No tenés notas todavía.</Text> : null
+            }
+            ListFooterComponent={
+              loadingList || canShowMore ? (
+                <ActivityIndicator style={{ marginVertical: 8 }} />
+              ) : null
+            }
+            onEndReachedThreshold={0.3}
+            onEndReached={() => {
+              if (canShowMore) {
+                setVisibleCount((v) => Math.min(v + pageStep, notes.length));
+              }
+            }}
+            onScroll={Animated.event(
+              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+              {
+                useNativeDriver: true,
+                listener: (e) => {
+                  const y = (e as any).nativeEvent?.contentOffset?.y ?? 0;
+                  setScrollPos(y);
+                },
+              }
+            )}
+            scrollEventThrottle={16}
+            initialNumToRender={8}
+            windowSize={10}
+            maxToRenderPerBatch={8}
+            removeClippedSubviews
+          />
+
+          {scrollPos > headerMeasuredH + 120 && (
+            <View
+              style={{
+                position: "absolute",
+                right: 8,
+                bottom: 8,
+                zIndex: 20,
+              }}
+            >
+              <Button
+                title="Nueva nota"
+                icon="add"
+                onPress={() => listRef.current?.scrollToOffset({ offset: 0, animated: true })}
+                style={{ minWidth: r.isTablet ? 160 : 140 }}
+              />
+            </View>
           )}
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </Screen>
   );
 }

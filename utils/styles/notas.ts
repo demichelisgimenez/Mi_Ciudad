@@ -5,9 +5,8 @@ export const notasStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background || "#f9f9f9",
-    padding: sizes.base || 20,
+    padding: 0,
   },
-
   title: {
     fontSize: sizes.lg || 22,
     fontWeight: "bold",
@@ -15,7 +14,6 @@ export const notasStyles = StyleSheet.create({
     color: colors.primary || "#1e3a8a",
     textAlign: "center",
   },
-
   composerCard: {
     backgroundColor: colors.surface || "#fff",
     borderRadius: sizes.radius || 12,
@@ -60,7 +58,6 @@ export const notasStyles = StyleSheet.create({
     marginLeft: 6,
   },
   composerActions: { flexDirection: "row", marginTop: sizes.sm || 8 },
-
   previewContainer: { marginBottom: sizes.sm || 10, alignItems: "center" },
   previewImage: {
     width: "100%",
@@ -79,10 +76,8 @@ export const notasStyles = StyleSheet.create({
     borderRadius: 12,
   },
   previewRemoveText: { color: "#fff", marginLeft: 4, fontSize: 12 },
-
-  notesList: { marginTop: sizes.sm || 10 },
-  notesListContent: { paddingBottom: sizes.sm || 10, flexGrow: 1 },
-
+  notesList: { marginTop: 0 },
+  notesListContent: { paddingBottom: 0, flexGrow: 1 },
   noteCard: {
     backgroundColor: colors.surface || "#fff",
     padding: sizes.base || 15,
@@ -104,7 +99,6 @@ export const notasStyles = StyleSheet.create({
     marginBottom: sizes.sm || 8,
     backgroundColor: "#00000010",
   },
-
   noteImagePlaceholder: {
     width: "100%",
     height: 160,
@@ -117,31 +111,36 @@ export const notasStyles = StyleSheet.create({
     backgroundColor: "#fafafa",
   },
   placeholderText: { opacity: 0.6, fontSize: 12 },
-
-noteTitle: {
-  fontSize: sizes.md || 18,
-  fontWeight: "bold",
-  color: colors.textPrimary || "#1e1f20",
-  marginBottom: 4,
-},
-noteText: {
-  fontSize: sizes.sm || 15,
-  color: colors.textSecondary || "#444",
-  marginBottom: 8,
-  lineHeight: 20,
-},
-noteDate: {
-  fontSize: 12,
-  opacity: 0.6,
-  marginTop: sizes.xs || 4,
-},
-
+  noteTitle: {
+    fontSize: sizes.md || 18,
+    fontWeight: "bold",
+    color: colors.textPrimary || "#1e1f20",
+    marginBottom: 4,
+  },
+  noteText: {
+    fontSize: sizes.sm || 15,
+    color: colors.textSecondary || "#444",
+    marginBottom: 8,
+    lineHeight: 20,
+  },
+  noteDate: {
+    fontSize: 12,
+    opacity: 0.6,
+    marginTop: sizes.xs || 4,
+  },
   emptyText: { textAlign: "center", opacity: 0.6, marginTop: sizes.base || 20 },
-
-  cardActions: { flexDirection: "row", marginTop: sizes.sm || 8, flexWrap: "wrap" },
-  actionButton: { flexDirection: "row", alignItems: "center", marginRight: sizes.base || 14, marginTop: 6 },
+  cardActions: {
+    flexDirection: "row",
+    marginTop: sizes.sm || 8,
+    flexWrap: "wrap",
+  },
+  actionButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginRight: sizes.base || 14,
+    marginTop: 6,
+  },
   actionText: { marginLeft: 6, fontSize: 13, opacity: 0.9 },
-
   editTitleInput: {
     borderWidth: 1,
     borderColor: colors.border || "#ddd",
@@ -159,7 +158,6 @@ noteDate: {
     marginTop: sizes.xs || 6,
     textAlignVertical: "top",
   },
-
   authRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -172,4 +170,3 @@ noteDate: {
   },
   mr8: { marginRight: sizes.sm || 8 },
 });
-

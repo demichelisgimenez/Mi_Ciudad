@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { radiosStyles as styles } from "@utils/styles/radios";
 import { useRadio } from "@shared/context/RadioContext";
 import { FEDERAL_RADAR } from "@utils/data/federal-radar";
+import Screen from "@app/screens/components/Screen";
 
 type PlayableCard = {
   key: string;
@@ -87,73 +88,72 @@ export default function RadiosScreen() {
   }, [loadFromJson]);
 
   return (
-    <FlatList
-      data={cards}
-      keyExtractor={(item) => item.key}
-      numColumns={2}
-      columnWrapperStyle={styles.columnWrapper}
-      contentContainerStyle={styles.listContent}
-      refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-      ListHeaderComponent={
-        <>
-          <View style={[styles.header, { marginTop: 8 }]}>
-            <Text style={styles.title}>
-              <Ionicons name="radio-outline" size={26} color="rgba(25,26,105,0.9)" />{" "}
-              Radio FM
-            </Text>
-            <Text style={styles.subtitle}>Federal, Entre Ríos</Text>
-          </View>
-
-          <View style={styles.presetsHeader}>
-            <Text style={styles.presetsLabel}>
-              {current?.name ? `Reproduciendo: ${current.name}` : "Radios disponibles"}
-            </Text>
-          </View>
-        </>
-      }
-      renderItem={({ item }) => {
-        const url = streamsByKey[item.key];
-        const active = current?.name ? current.name === item.title : false;
-
-        return (
-          <TouchableOpacity
-            style={[
-              styles.presetBtn,
-              active && styles.presetBtnActive,
-              !url && styles.presetBtnDisabled,
-            ]}
-            disabled={!url}
-            onPress={() => {
-              if (!url) return;
-              setStation({ name: item.title, url, freq: (item as any)?.freq });
-            }}
-          >
-            <Image source={{ uri: item.image }} style={styles.presetImage} />
-            <Text
-              style={[styles.presetText, active && styles.presetTextActive, styles.centerText]}
-              numberOfLines={2}
+    <Screen>
+      <FlatList
+        data={cards}
+        keyExtractor={(item) => item.key}
+        numColumns={2}
+        columnWrapperStyle={styles.columnWrapper}
+        contentContainerStyle={styles.listContent}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        ListHeaderComponent={
+          <>
+            <View style={[styles.header, { marginTop: 8 }]}>
+              <Text style={styles.title}>
+                <Ionicons name="radio-outline" size={26} color="rgba(25,26,105,0.9)" /> Radio FM
+              </Text>
+              <Text style={styles.subtitle}>Federal, Entre Ríos</Text>
+            </View>
+            <View style={styles.presetsHeader}>
+              <Text style={styles.presetsLabel}>
+                {current?.name ? `Reproduciendo: ${current.name}` : "Radios disponibles"}
+              </Text>
+            </View>
+          </>
+        }
+        renderItem={({ item }) => {
+          const url = streamsByKey[item.key];
+          const active = current?.name ? current.name === item.title : false;
+          return (
+            <TouchableOpacity
+              style={[
+                styles.presetBtn,
+                active && styles.presetBtnActive,
+                !url && styles.presetBtnDisabled,
+              ]}
+              disabled={!url}
+              onPress={() => {
+                if (!url) return;
+                setStation({ name: item.title, url, freq: (item as any)?.freq });
+              }}
             >
-              {item.title}
-            </Text>
-            {!!item.desc && (
+              <Image source={{ uri: item.image }} style={styles.presetImage} />
               <Text
-                style={[styles.presetName, active && styles.presetNameActive, styles.centerText]}
+                style={[styles.presetText, active && styles.presetTextActive, styles.centerText]}
                 numberOfLines={2}
               >
-                {item.desc}
+                {item.title}
               </Text>
-            )}
-            {!url && (
-              <Text
-                style={[styles.presetName, styles.centerText, styles.presetUnavailable]}
-                numberOfLines={1}
-              >
-                (sin stream)
-              </Text>
-            )}
-          </TouchableOpacity>
-        );
-      }}
-    />
+              {!!item.desc && (
+                <Text
+                  style={[styles.presetName, active && styles.presetNameActive, styles.centerText]}
+                  numberOfLines={2}
+                >
+                  {item.desc}
+                </Text>
+              )}
+              {!url && (
+                <Text
+                  style={[styles.presetName, styles.centerText, styles.presetUnavailable]}
+                  numberOfLines={1}
+                >
+                  (sin stream)
+                </Text>
+              )}
+            </TouchableOpacity>
+          );
+        }}
+      />
+    </Screen>
   );
 }

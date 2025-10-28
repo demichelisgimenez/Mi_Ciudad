@@ -5,6 +5,7 @@ export const radiosStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.backgroundColor ?? "#fff",
+    padding: 0,
   },
 
   header: {
