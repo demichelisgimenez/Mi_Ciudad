@@ -57,7 +57,6 @@ export default function NotasScreen() {
     deleteNote,
   } = useNotes(userId);
 
-  // refrescar al enfocar (útil después de login)
   useFocusEffect(
     useCallback(() => {
       if (isLogged) onRefresh();
@@ -72,7 +71,6 @@ export default function NotasScreen() {
     setEditing((e) => (e ? { ...e, imageUri: uri } : e));
   }
 
-  // Intercepta marcas "PICK_*" que vienen desde Card
   if (normalizedEditing && typeof normalizedEditing.imageUri === "string") {
     if (normalizedEditing.imageUri === ("PICK_CAMERA" as any)) {
       setEditing({ ...normalizedEditing, imageUri: undefined });
@@ -86,7 +84,7 @@ export default function NotasScreen() {
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: colors.background }}
-      edges={["left", "right", "bottom"]} // 👈 sin "top" porque el header del Drawer ya empuja
+      edges={["left", "right", "bottom"]}
     >
       <KeyboardAvoidingView
         style={{ flex: 1 }}

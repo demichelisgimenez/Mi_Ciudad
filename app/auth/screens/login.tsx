@@ -20,8 +20,8 @@ import { supabase } from "@utils/supabase";
 import Button from "@components/Button";
 import { colors, sizes } from "@utils";
 
-const TITLE_TOP = 16;       // espacio del título respecto del borde superior
-const LINKS_GAP = 10;       // separación entre botón principal y leyendas
+const TITLE_TOP = 16;
+const LINKS_GAP = 10;
 
 export default function Login() {
   const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
@@ -64,13 +64,12 @@ export default function Login() {
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        {/* Centrado vertical real, sin que el botón “se extienda” */}
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
             justifyContent: "center",
             paddingHorizontal: 20,
-            paddingTop: TITLE_TOP, // espacio suave del título
+            paddingTop: TITLE_TOP,
             paddingBottom: 24,
           }}
           keyboardShouldPersistTaps="handled"
@@ -109,7 +108,6 @@ export default function Login() {
               </TouchableOpacity>
             </View>
 
-            {/* Botón principal en su propio contenedor: no ocupa fuera de su área */}
             <View style={{ marginTop: 8 }}>
               <Button
                 title={loading ? "Ingresando..." : "Ingresar"}
@@ -119,7 +117,6 @@ export default function Login() {
               />
             </View>
 
-            {/* Leyendas pegadas al botón (no al fondo) */}
             <View style={{ marginTop: LINKS_GAP }}>
               <TouchableOpacity
                 style={styles.linkButton}

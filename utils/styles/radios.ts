@@ -1,15 +1,20 @@
-import { colors } from "@utils/colors";
+// @utils/styles/radios.ts
 import { StyleSheet } from "react-native";
+import { colors } from "@utils/colors";
+
+
 
 export const radiosStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.backgroundColor, 
+    backgroundColor: colors.backgroundColor ?? "#fff",
     padding: 20,
   },
+
+  // Header
   header: {
     alignItems: "center",
-    marginBottom: 30,
+    marginBottom: 20,
   },
   title: {
     fontSize: 24,
@@ -20,6 +25,8 @@ export const radiosStyles = StyleSheet.create({
     fontSize: 14,
     color: "rgba(22, 22, 22, 1)",
   },
+
+  // Card principal
   card: {
     backgroundColor: "rgba(15, 15, 15, 1)",
     borderRadius: 20,
@@ -39,6 +46,7 @@ export const radiosStyles = StyleSheet.create({
     fontWeight: "600",
     color: "white",
     marginBottom: 10,
+    textAlign: "center",
   },
   status: {
     flexDirection: "row",
@@ -60,6 +68,8 @@ export const radiosStyles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
   },
+
+  // Controles
   controls: {
     flexDirection: "row",
     justifyContent: "center",
@@ -84,31 +94,15 @@ export const radiosStyles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "rgba(34,197,94,0.5)",
   },
-  playText: {
-    fontSize: 28,
-    color: "black",
-  },
-  tuner: {
-    backgroundColor: "rgba(211, 211, 211, 0.12)",
-    borderRadius: 20,
-    padding: 20,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
-  },
-  tunerLabel: {
-    fontSize: 16,
-    fontWeight: "600",
-    textAlign: "center",
-    color: "white",
-    marginBottom: 20,
-  },
+
+  // Lista de emisoras
   presets: {
     backgroundColor: "rgba(223, 221, 221, 1)",
     borderRadius: 20,
     padding: 20,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.12)",
+    marginBottom: 40,
   },
   presetsLabel: {
     fontSize: 16,
@@ -122,15 +116,20 @@ export const radiosStyles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-between",
     gap: 10,
+    marginTop: 5,
   },
   presetBtn: {
     flexBasis: "48%",
-    backgroundColor: "rgba(22, 21, 21, 0.97)",
+    backgroundColor: "rgba(22, 21, 21, 0.97)", // negro
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: "center",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
+  },
+ presetBtnActive: {
+    backgroundColor: "rgba(34,197,94,0.15)",
+    borderColor: "rgba(34,197,94,0.6)",
   },
   presetText: {
     fontSize: 16,
@@ -141,4 +140,31 @@ export const radiosStyles = StyleSheet.create({
     fontSize: 12,
     color: "rgba(255, 255, 255, 1)",
   },
+  presetTextActive: { color: "#0B0B0B" },
+  presetNameActive: { color: "#0B0B0B" },
+  // Filtros
+  filterContainer: {
+    paddingHorizontal: 20,
+    marginBottom: 10,
+  },
+  filterLabel: {
+    fontWeight: "600",
+    marginBottom: 6,
+  },
+  chip: {
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    borderWidth: 1,
+    marginRight: 8,
+  },
+  chipActive: {
+    borderColor: "rgba(34,197,94,0.7)",
+    backgroundColor: "rgba(34,197,94,0.12)",
+  },
+  chipInactive: {
+    borderColor: "rgba(0,0,0,0.15)",
+    backgroundColor: "transparent",
+  },
+  
 });
