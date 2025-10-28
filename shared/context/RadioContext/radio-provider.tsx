@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import React, { useRef, useState, useEffect, useCallback } from "react";
 import { createAudioPlayer, setAudioModeAsync } from "expo-audio";
-import { RadioContext, type RadioStation } from "@shared/context/RadioContext";
+import { RadioContext, type RadioStation, type PlayerPos } from "./radio-context";
 
 export default function RadioProvider({ children }: { children: React.ReactNode }) {
   const [stations, setStations] = useState<RadioStation[]>([]);
@@ -8,17 +8,13 @@ export default function RadioProvider({ children }: { children: React.ReactNode 
   const [isPlaying, setIsPlaying] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
+  const [playerVisible, setPlayerVisible] = useState(false);
+  const [playerPos, setPlayerPos] = useState<PlayerPos>(null);
 
-  // Un único player global
   const playerRef = useRef<ReturnType<typeof createAudioPlayer> | null>(null);
 
   useEffect(() => {
-    // config global de audio
-    setAudioModeAsync({
-      playsInSilentMode: true,
-      shouldPlayInBackground: true,
-    }).catch(() => {});
-
+    setAudioModeAsync({ playsInSilentMode: true, shouldPlayInBackground: true }).catch(() => {});
     playerRef.current = createAudioPlayer(null);
     return () => {
       try { playerRef.current?.remove(); } catch {}
@@ -29,37 +25,43 @@ export default function RadioProvider({ children }: { children: React.ReactNode 
   const unload = useCallback(async () => {
     try {
       playerRef.current?.pause?.();
-    } catch {}
-    setIsPlaying(false);
+    } finally {
+      setIsPlaying(false);
+    }
   }, []);
 
-  const loadAndPlay = useCallback(async (station: RadioStation) => {
-    if (!playerRef.current) return;
-    setLoading(true);
-    setError(undefined);
-    try {
-      await unload();
+  const loadAndPlay = useCallback(
+    async (station: RadioStation) => {
+      if (!playerRef.current) return;
+      setLoading(true);
+      setError(undefined);
+      try {
+        await unload();
+        playerRef.current.replace({ uri: station.url });
+        playerRef.current.play();
+        setCurrent(station);
+        setIsPlaying(true);
+        setPlayerVisible(true);
+      } catch (e: any) {
+        setError(typeof e?.message === "string" ? e.message : "No se pudo reproducir esta emisora.");
+        setIsPlaying(false);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [unload]
+  );
 
-      playerRef.current.replace({ uri: station.url });
+  const play = useCallback(
+    async (s?: RadioStation) => {
+      if (s) return loadAndPlay(s);
+      if (!playerRef.current || !current) return;
       playerRef.current.play();
-
-      setCurrent(station);
       setIsPlaying(true);
-    } catch (e: any) {
-      setError(typeof e?.message === "string" ? e.message : "No se pudo reproducir esta emisora.");
-      setIsPlaying(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [unload]);
-
-  const play = useCallback(async (s?: RadioStation) => {
-    if (s) return loadAndPlay(s);
-    if (!playerRef.current) return;
-    if (!current) return;
-    playerRef.current.play();
-    setIsPlaying(true);
-  }, [current, loadAndPlay]);
+      setPlayerVisible(true);
+    },
+    [current, loadAndPlay]
+  );
 
   const pause = useCallback(async () => {
     if (!playerRef.current) return;
@@ -72,6 +74,11 @@ export default function RadioProvider({ children }: { children: React.ReactNode 
     if (isPlaying) return pause();
     return play();
   }, [isPlaying, play, pause]);
+
+  const dismissPlayer = useCallback(() => {
+    pause();
+    setPlayerVisible(false);
+  }, [pause]);
 
   const setStation = useCallback(async (s: RadioStation) => loadAndPlay(s), [loadAndPlay]);
 
@@ -99,6 +106,9 @@ export default function RadioProvider({ children }: { children: React.ReactNode 
         isPlaying,
         loading,
         error,
+        playerVisible,
+        playerPos,
+        setPlayerPos,
         play,
         pause,
         toggle,
@@ -107,6 +117,7 @@ export default function RadioProvider({ children }: { children: React.ReactNode 
         prev,
         reload: () => {},
         setPlaylist,
+        dismissPlayer,
       }}
     >
       {children}

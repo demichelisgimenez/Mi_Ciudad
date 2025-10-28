@@ -1,23 +1,23 @@
-// @utils/styles/radios.ts
 import { StyleSheet } from "react-native";
 import { colors } from "@utils/colors";
-
-
 
 export const radiosStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.backgroundColor ?? "#fff",
-    padding: 20,
   },
 
-  // Header
   header: {
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 12,
+  },
+  headerTop: {
+    alignItems: "center",
+    marginTop: 8,
+    marginBottom: 16,
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: "bold",
     color: "rgba(25, 26, 105, 0.9)",
   },
@@ -26,13 +26,13 @@ export const radiosStyles = StyleSheet.create({
     color: "rgba(22, 22, 22, 1)",
   },
 
-  // Card principal
   card: {
     backgroundColor: "rgba(15, 15, 15, 1)",
     borderRadius: 20,
-    padding: 25,
+    padding: 20,
     alignItems: "center",
-    marginBottom: 20,
+    marginHorizontal: 16,
+    marginBottom: 16,
     borderWidth: 1,
     borderColor: "rgba(5, 5, 5, 0.2)",
   },
@@ -69,12 +69,11 @@ export const radiosStyles = StyleSheet.create({
     fontWeight: "500",
   },
 
-  // Controles
   controls: {
     flexDirection: "row",
     justifyContent: "center",
     gap: 20,
-    marginBottom: 30,
+    marginBottom: 24,
   },
   controlBtn: {
     width: 60,
@@ -95,41 +94,38 @@ export const radiosStyles = StyleSheet.create({
     borderColor: "rgba(34,197,94,0.5)",
   },
 
-  // Lista de emisoras
-  presets: {
+  presetsHeader: {
     backgroundColor: "rgba(223, 221, 221, 1)",
     borderRadius: 20,
-    padding: 20,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.12)",
-    marginBottom: 40,
+    marginHorizontal: 16,
+    marginBottom: 20,
   },
   presetsLabel: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: "600",
     textAlign: "center",
     color: "black",
-    marginBottom: 20,
   },
-  presetGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    gap: 10,
-    marginTop: 5,
-  },
+
   presetBtn: {
     flexBasis: "48%",
-    backgroundColor: "rgba(22, 21, 21, 0.97)", // negro
-    paddingVertical: 16,
-    borderRadius: 12,
+    backgroundColor: "rgba(22, 21, 21, 0.97)",
+    paddingVertical: 18,
+    borderRadius: 14,
     alignItems: "center",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.2)",
   },
- presetBtnActive: {
+  presetBtnActive: {
     backgroundColor: "rgba(34,197,94,0.15)",
     borderColor: "rgba(34,197,94,0.6)",
+  },
+  presetBtnDisabled: {
+    opacity: 0.6,
   },
   presetText: {
     fontSize: 16,
@@ -142,29 +138,105 @@ export const radiosStyles = StyleSheet.create({
   },
   presetTextActive: { color: "#0B0B0B" },
   presetNameActive: { color: "#0B0B0B" },
-  // Filtros
-  filterContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 10,
+  presetImage: {
+    width: 64,
+    height: 64,
+    borderRadius: 12,
+    marginBottom: 8,
   },
-  filterLabel: {
-    fontWeight: "600",
-    marginBottom: 6,
+  presetUnavailable: {
+    marginTop: 4,
   },
-  chip: {
-    paddingVertical: 8,
+
+  listContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 40,
+  },
+  columnWrapper: {
+    justifyContent: "space-between",
+    marginBottom: 16,
+  },
+  centerText: {
+    textAlign: "center",
+  },
+
+  /* Mini Player */
+  miniPlayerContainer: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 12,
     paddingHorizontal: 12,
+  },
+  miniPlayer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(223, 221, 221, 1)",
     borderRadius: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 4,
     borderWidth: 1,
-    marginRight: 8,
+    borderColor: "rgba(0,0,0,0.06)",
+    maxWidth: 600,
   },
-  chipActive: {
-    borderColor: "rgba(34,197,94,0.7)",
-    backgroundColor: "rgba(34,197,94,0.12)",
+  miniPlayerTitle: {
+    color: "#0B0B0B",
+    fontSize: 14,
+    fontWeight: "700",
   },
-  chipInactive: {
-    borderColor: "rgba(0,0,0,0.15)",
-    backgroundColor: "transparent",
+  miniPlayerSubtitle: {
+    color: "rgba(0,0,0,0.55)",
+    fontSize: 12,
+    marginTop: 2,
   },
-  
+  miniIconBtn: {
+    marginHorizontal: 6,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.06)",
+  },
+  miniPlayBtn: {
+    marginHorizontal: 6,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(34,197,94,0.65)",
+  },
+  miniPlayBtnActive: {
+    backgroundColor: "rgba(34,197,94,0.85)",
+  },
+  miniCloseBtn: {
+    marginLeft: 6,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(0,0,0,0.06)",
+  },
+
+  stickyHeader: {
+    backgroundColor: colors.backgroundColor ?? "#fff",
+    paddingTop: 8,
+  },
+  miniOverlay: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  },
+  miniDraggable: {
+    position: "absolute",
+    maxWidth: 600,
+  },
 });
