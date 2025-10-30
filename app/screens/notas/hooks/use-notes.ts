@@ -14,13 +14,20 @@ export function useNotes(userId: string | null) {
   const [newImageUri, setNewImageUri] = useState<string | null>(null);
   const [editing, setEditing] = useState<EditState>(null);
 
+  const clearNotes = useCallback(() => {
+    setNotes([]);
+    setLoadingList(false);
+    setRefreshing(false);
+    setEditing(null);
+  }, []);
+
   const fetchNotes = useCallback(async () => {
     if (!userId) return;
     try {
       setLoadingList(true);
       const { data, error } = await supabase
         .from("notes")
-        .select("id, title, description, image_url, created_at, updated_at")
+        .select("id, title, description, image_url, created_at, updated_at, user_id")
         .eq("user_id", userId)
         .order("updated_at", { ascending: false });
       if (error) throw error;
@@ -33,21 +40,25 @@ export function useNotes(userId: string | null) {
   }, [userId]);
 
   useEffect(() => {
+    if (!userId) {
+      clearNotes();
+      return;
+    }
     fetchNotes();
-  }, [fetchNotes]);
+  }, [userId, fetchNotes, clearNotes]);
 
   const onRefresh = useCallback(async () => {
+    if (!userId) return;
     setRefreshing(true);
     await fetchNotes();
     setRefreshing(false);
-  }, [fetchNotes]);
+  }, [userId, fetchNotes]);
 
   async function addNote() {
     if (!userId) return Alert.alert("Sesión requerida", "Iniciá sesión para crear notas.");
     if (!newTitle.trim() && !newDesc.trim() && !newImageUri) {
       return Alert.alert("Nada para guardar", "Escribí un título/descripcion o adjuntá una imagen.");
     }
-
     try {
       setLoadingCreate(true);
       const image_url = newImageUri ? await uploadImageToStorage(newImageUri, userId) : null;
@@ -58,7 +69,9 @@ export function useNotes(userId: string | null) {
         image_url,
       });
       if (error) throw error;
-      setNewTitle(""); setNewDesc(""); setNewImageUri(null);
+      setNewTitle("");
+      setNewDesc("");
+      setNewImageUri(null);
       await fetchNotes();
     } catch (e: any) {
       Alert.alert("Error", e?.message ?? "No se pudo guardar la nota.");
@@ -87,16 +100,25 @@ export function useNotes(userId: string | null) {
   }
 
   function startEdit(n: Note) {
-    setEditing({ id: n.id, title: n.title ?? "", description: n.description ?? "", imageUri: undefined, saving: false });
+    setEditing({
+      id: n.id,
+      title: n.title ?? "",
+      description: n.description ?? "",
+      imageUri: undefined,
+      saving: false,
+    });
   }
-  function cancelEdit() { setEditing(null); }
+
+  function cancelEdit() {
+    setEditing(null);
+  }
 
   async function saveEdit(original: Note) {
     if (!editing || !userId) return;
     try {
       setEditing({ ...editing, saving: true });
 
-      let newImageUrl: string | null | undefined = undefined; // undefined => no tocar
+      let newImageUrl: string | null | undefined = undefined;
       if (editing.imageUri === null) {
         await removeStorageByPublicUrl(original.image_url);
         newImageUrl = null;
@@ -112,7 +134,11 @@ export function useNotes(userId: string | null) {
       };
       if (newImageUrl !== undefined) payload.image_url = newImageUrl;
 
-      const { error } = await supabase.from("notes").update(payload).eq("id", editing.id).eq("user_id", userId);
+      const { error } = await supabase
+        .from("notes")
+        .update(payload)
+        .eq("id", editing.id)
+        .eq("user_id", userId);
       if (error) throw error;
 
       setEditing(null);
@@ -124,10 +150,24 @@ export function useNotes(userId: string | null) {
   }
 
   return {
-    notes, loadingList, refreshing,
-    newTitle, setNewTitle, newDesc, setNewDesc, newImageUri, setNewImageUri, loadingCreate, addNote,
-    editing, setEditing, startEdit, cancelEdit, saveEdit,
+    notes,
+    loadingList,
+    refreshing,
     onRefresh,
+    newTitle,
+    setNewTitle,
+    newDesc,
+    setNewDesc,
+    newImageUri,
+    setNewImageUri,
+    loadingCreate,
+    addNote,
+    editing,
+    setEditing,
+    startEdit,
+    cancelEdit,
+    saveEdit,
     deleteNote,
+    clearNotes,
   };
 }

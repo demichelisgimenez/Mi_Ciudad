@@ -1,5 +1,3 @@
-// @utils/constants.ts
-import type { RadioBrowserStation } from "@utils/radio-browser";
 export const ROOT_ROUTES = {
   AUTH: "Auth",
   SCREENS: "Screens",
@@ -29,11 +27,3 @@ export type RadioStation = {
   freq?: number;
   favicon?: string;
 };
-
-export function mapRBtoStations(items: RadioBrowserStation[]): RadioStation[] {
-  return items.map((s) => ({
-    name: s.name?.trim() || "Emisora",
-    url: s.url,
-    favicon: s.favicon,
-  }));
-}

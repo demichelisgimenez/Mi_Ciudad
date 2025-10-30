@@ -18,7 +18,7 @@ interface State {
 }
 
 const initialState: State = {
-  isLoading: false,
+  isLoading: true,
   token: null,
   user: null,
   refreshToken: null,
@@ -57,7 +57,7 @@ const reducer = (prevState: State, action: Action): State => {
     }
     case AUTH_ACTIONS.LOGOUT: {
       deleteUser();
-      return initialState;
+      return { ...initialState, isLoading: false };
     }
     case AUTH_ACTIONS.SET_LOADING: {
       return { ...prevState, isLoading: !!payload?.isLoading };
@@ -74,7 +74,11 @@ const AuthProvider = (props: any) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
+    let mounted = true;
+
+    (async () => {
+      const { data } = await supabase.auth.getSession();
+      if (!mounted) return;
       const session = data.session;
       if (session?.user) {
         const u = mapSupabaseUserToIUser(session.user);
@@ -89,7 +93,8 @@ const AuthProvider = (props: any) => {
       } else {
         dispatch({ type: AUTH_ACTIONS.LOGOUT });
       }
-    });
+      dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: { isLoading: false } });
+    })();
 
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
@@ -108,6 +113,7 @@ const AuthProvider = (props: any) => {
     });
 
     return () => {
+      mounted = false;
       try {
         sub?.subscription?.unsubscribe();
       } catch {}

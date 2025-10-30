@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useRef, useState } from "react";
+import React, { useMemo, useCallback, useRef, useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -16,7 +16,7 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Screen from "@app/screens/components/Screen";
 import { notasStyles as styles } from "@utils/styles/notas";
-import { colors, sizes } from "@utils";
+import { colors } from "@utils";
 import { useResponsive } from "@utils/responsive";
 import { useAuth } from "@shared/context/AuthContext";
 import { ROOT_ROUTES, AUTH_ROUTES } from "@utils/constants";
@@ -59,31 +59,33 @@ export default function NotasScreen() {
     cancelEdit,
     saveEdit,
     deleteNote,
+    clearNotes,
   } = useNotes(userId);
 
   useFocusEffect(
     useCallback(() => {
       if (isLogged) onRefresh();
-    }, [isLogged, onRefresh])
+      else clearNotes();
+    }, [isLogged, onRefresh, clearNotes])
   );
 
   const normalizedEditing: EditState = useMemo(() => editing, [editing]);
 
-  async function handleEditImagePick(kind: "camera" | "library") {
-    const uri = await pickImage(kind);
-    if (!uri) return;
-    setEditing((e) => (e ? { ...e, imageUri: uri } : e));
-  }
-
-  if (normalizedEditing && typeof normalizedEditing.imageUri === "string") {
-    if (normalizedEditing.imageUri === ("PICK_CAMERA" as any)) {
-      setEditing({ ...normalizedEditing, imageUri: undefined });
-      handleEditImagePick("camera");
-    } else if (normalizedEditing.imageUri === ("PICK_LIBRARY" as any)) {
-      setEditing({ ...normalizedEditing, imageUri: undefined });
-      handleEditImagePick("library");
+  useEffect(() => {
+    if (normalizedEditing && typeof normalizedEditing.imageUri === "string") {
+      if (normalizedEditing.imageUri === ("PICK_CAMERA" as any)) {
+        setEditing({ ...normalizedEditing, imageUri: undefined });
+        pickImage("camera").then((uri) => {
+          if (uri) setNewImageUri(uri);
+        });
+      } else if (normalizedEditing.imageUri === ("PICK_LIBRARY" as any)) {
+        setEditing({ ...normalizedEditing, imageUri: undefined });
+        pickImage("library").then((uri) => {
+          if (uri) setNewImageUri(uri);
+        });
+      }
     }
-  }
+  }, [normalizedEditing, setEditing, setNewImageUri]);
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const [headerMeasuredH, setHeaderMeasuredH] = useState(0);
@@ -92,8 +94,8 @@ export default function NotasScreen() {
 
   const [visibleCount, setVisibleCount] = useState(12);
   const pageStep = 10;
-  const slicedData = (loadingList ? [] : notes).slice(0, visibleCount);
-  const canShowMore = !loadingList && visibleCount < (notes?.length || 0);
+  const slicedData = isLogged ? (loadingList ? [] : notes).slice(0, visibleCount) : [];
+  const canShowMore = isLogged && !loadingList && visibleCount < (notes?.length || 0);
 
   const onHeaderLayout = (e: LayoutChangeEvent) => {
     const h = e.nativeEvent.layout.height || 0;
@@ -148,33 +150,43 @@ export default function NotasScreen() {
             </Text>
 
             {!isLogged ? (
-              <>
-                <View style={[styles.authRow, { marginBottom: r.isLandscape ? 12 : 16 }]}>
-                  <View style={styles.authBtn}>
+              <View style={{ paddingHorizontal: 8, marginBottom: r.isLandscape ? 8 : 12 }}>
+                <View style={[styles.authRow, { marginBottom: 16, justifyContent: "center" }]}>
+                  <View style={[styles.authBtn, { flex: 1, marginHorizontal: 4 }]}>
                     <Button
                       title="Iniciar Sesión"
                       icon="log-in-outline"
                       onPress={() =>
-                        navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.LOGIN })
+                        navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.LOGIN } as never)
                       }
                       fullWidth
-                      style={{ marginRight: 8 }}
                     />
                   </View>
-                  <View style={styles.authBtn}>
+                  <View style={[styles.authBtn, { flex: 1, marginHorizontal: 4 }]}>
                     <Button
                       title="Registrarme"
                       icon="person-add-outline"
                       variant="outline"
                       onPress={() =>
-                        navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.REGISTER })
+                        navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.REGISTER } as never)
                       }
                       fullWidth
                     />
                   </View>
                 </View>
-                <Text>Ingresá para crear y ver tus notas.</Text>
-              </>
+                <Text
+                  style={{
+                    textAlign: "center",
+                    fontSize: r.isTablet ? 18 : 14,
+                    color: colors.textSecondary,
+                    marginTop: 4,
+                    marginBottom: 8,
+                    paddingHorizontal: 16,
+                  }}
+                >
+                  Ingresá para crear y ver tus notas.
+                </Text>
+              </View>
             ) : (
               <Composer
                 title={newTitle}
@@ -187,11 +199,11 @@ export default function NotasScreen() {
                 onAdd={addNote}
                 onPickCamera={async () => {
                   const uri = await pickImage("camera");
-                  if (uri) setNewImageUri(uri);
+                  setNewImageUri(uri ?? null);
                 }}
                 onPickLibrary={async () => {
                   const uri = await pickImage("library");
-                  if (uri) setNewImageUri(uri);
+                  setNewImageUri(uri ?? null);
                 }}
               />
             )}
@@ -209,18 +221,21 @@ export default function NotasScreen() {
             ]}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
-            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            refreshControl={
+              <RefreshControl
+                refreshing={isLogged ? refreshing : false}
+                onRefresh={isLogged ? onRefresh : undefined}
+              />
+            }
             ListEmptyComponent={
-              !loadingList ? <Text style={styles.emptyText}>No tenés notas todavía.</Text> : null
+              isLogged && !loadingList ? <Text style={styles.emptyText}>No tenés notas todavía.</Text> : null
             }
             ListFooterComponent={
-              loadingList || canShowMore ? (
-                <ActivityIndicator style={{ marginVertical: 8 }} />
-              ) : null
+              isLogged && (loadingList || canShowMore) ? <ActivityIndicator style={{ marginVertical: 8 }} /> : null
             }
             onEndReachedThreshold={0.3}
             onEndReached={() => {
-              if (canShowMore) {
+              if (isLogged && canShowMore) {
                 setVisibleCount((v) => Math.min(v + pageStep, notes.length));
               }
             }}
@@ -241,7 +256,7 @@ export default function NotasScreen() {
             removeClippedSubviews
           />
 
-          {scrollPos > headerMeasuredH + 120 && (
+          {isLogged && scrollPos > headerMeasuredH + 60 && (
             <View
               style={{
                 position: "absolute",

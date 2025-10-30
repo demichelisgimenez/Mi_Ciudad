@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Alert, Switch } from "react-native";
+import { View, Text, TouchableOpacity, Switch } from "react-native";
 import { ajustesStyles as styles, switchColors } from "@utils/styles/ajustes";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@shared/context/AuthContext";
@@ -8,27 +8,32 @@ import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "@app/navigation/types";
 import { ROOT_ROUTES, AUTH_ROUTES } from "@utils/constants";
+import { AUTH_ACTIONS } from "@shared/context/AuthContext/enums";
 
 type ThemeChoice = "blue" | "dark" | "light";
 
 export default function Ajustes() {
-  const { state } = useAuth();
+  const { state, dispatch } = useAuth();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const [theme, setTheme] = useState<ThemeChoice>("blue");
   const [notifications, setNotifications] = useState<boolean>(true);
+  const [signingOut, setSigningOut] = useState(false);
 
   const handleLogin = () => {
     navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.LOGIN });
   };
 
   const handleLogout = async () => {
+    if (signingOut) return;
+    setSigningOut(true);
     try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      Alert.alert("Sesión cerrada", "Has cerrado sesión correctamente.");
-    } catch (e: any) {
-      Alert.alert("Error", e?.message ?? "No se pudo cerrar sesión.");
+      await supabase.auth.getSession();
+      const { error } = await supabase.auth.signOut({ scope: "global" as any });
+      if (error && error.message !== "Auth session missing") throw error;
+    } finally {
+      dispatch({ type: AUTH_ACTIONS.LOGOUT });
+      setSigningOut(false);
     }
   };
 
@@ -77,7 +82,7 @@ export default function Ajustes() {
           <View style={styles.iconCircle}>
             <Ionicons name="notifications-outline" size={18} style={styles.iconNeutral} />
           </View>
-          <View style={styles.cardHeaderText}>
+          <View className="styles.cardHeaderText">
             <Text style={styles.cardTitle}>Notificaciones</Text>
             <Text style={styles.cardSubtitle}>Recibir alertas y actualizaciones</Text>
           </View>
@@ -93,14 +98,19 @@ export default function Ajustes() {
       </View>
 
       {state?.user ? (
-        <TouchableOpacity activeOpacity={0.9} onPress={handleLogout} style={[styles.card, styles.logoutCard]}>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={handleLogout}
+          style={[styles.card, styles.logoutCard, signingOut && { opacity: 0.6 }]}
+          disabled={signingOut}
+        >
           <View style={styles.logoutRow}>
             <View style={[styles.iconCircle, styles.logoutIconCircle]}>
               <Ionicons name="log-out-outline" size={18} style={styles.iconLogout} />
             </View>
 
             <View style={styles.cardHeaderText}>
-              <Text style={styles.logoutTitle}>Cerrar Sesión</Text>
+              <Text style={styles.logoutTitle}>{signingOut ? "Cerrando sesión..." : "Cerrar Sesión"}</Text>
               <Text style={styles.logoutSubtitle}>Salir de tu cuenta</Text>
             </View>
 
