@@ -28,10 +28,10 @@
     },
     "plugins": [
       "expo-secure-store",
-      "expo-barcode-scanner",
       "expo-font",
       "expo-audio",
-      "expo-video"
+      "expo-video",
+      "expo-camera"
     ]
   }
 }
