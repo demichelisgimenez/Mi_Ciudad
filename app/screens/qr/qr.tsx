@@ -15,7 +15,7 @@ import { CameraView, useCameraPermissions, scanFromURLAsync } from "expo-camera"
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import { qrStyles as styles } from "@utils/styles/qr";
-import {supabase} from "@utils/supabase";
+import { supabase } from "@utils/supabase";
 import { useAuth } from "@shared/context/AuthContext";
 
 type Mode = "camera" | "idle";
@@ -48,66 +48,54 @@ export default function QRScreen() {
 
   if (!permission) return <View />;
 
-  if (!permission.granted) {
-    return (
-      <View style={styles.center}>
-        <Text style={styles.permTitle}>Necesitamos permiso para usar la cámara</Text>
-        <TouchableOpacity style={styles.primaryBtn} onPress={requestPermission}>
-          <Ionicons name="camera" size={18} />
-          <Text style={styles.primaryBtnText}>Dar permiso</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   const resolveUserId = async (): Promise<string | null> => {
     try {
       const s: any = state;
-      const fromState =
-        s?.user?.id ||
-        s?.user?.user?.id ||
-        s?.session?.user?.id;
-      if (fromState) return String(fromState);
-
-      return null;
+      const fromState = s?.user?.id || s?.user?.user?.id || s?.session?.user?.id;
+      return fromState ? String(fromState) : null;
     } catch {
       return null;
     }
   };
 
-  const handleBarcodeScanned = (data: string) => {
-    setScanned(true);
-    setLink(data);
-  };
+  async function ensureMediaPermission(): Promise<boolean> {
+    const current = await ImagePicker.getMediaLibraryPermissionsAsync();
+    if (current.granted) return true;
+    if (current.canAskAgain) {
+      const req = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      return req.granted;
+    }
+    return await new Promise<boolean>((resolve) => {
+      Alert.alert(
+        "Permiso requerido",
+        "La app no tiene acceso a tu galería. Podés habilitarlo desde Configuración.",
+        [
+          { text: "Cancelar", style: "cancel", onPress: () => resolve(false) },
+          { text: "Abrir configuración", onPress: async () => { await Linking.openSettings(); resolve(false); } },
+        ]
+      );
+    });
+  }
 
-  const handlePickImage = async () => {
+  async function handlePickImage() {
     try {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert("Permiso requerido", "Necesitamos acceso a tus fotos para leer un QR desde imagen.");
-        return;
-      }
-
+      const ok = await ensureMediaPermission();
+      if (!ok) return;
       const res = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: false,
         quality: 1,
       });
-
       if (res.canceled || !res.assets?.length) return;
-
       setMode("idle");
       setScanned(false);
       setLink(null);
-
       const uri = res.assets[0].uri;
       const results = await scanFromURLAsync(uri, ["qr"]);
-
       if (!results.length) {
         Alert.alert("Sin QR", "No se detectó un QR válido en la imagen.");
         return;
       }
-
       const value = (results[0] as any)?.data ?? (results[0] as any)?.content?.data ?? null;
       if (value) {
         setScanned(true);
@@ -118,6 +106,11 @@ export default function QRScreen() {
     } catch (e: any) {
       Alert.alert("Error", e?.message ?? "No se pudo procesar la imagen.");
     }
+  }
+
+  const handleBarcodeScanned = (data: string) => {
+    setScanned(true);
+    setLink(data);
   };
 
   const handleRescan = () => {
@@ -153,14 +146,12 @@ export default function QRScreen() {
         setSaving(false);
         return;
       }
-
       const { error } = await supabase.from("notes").insert({
         user_id: userId,
         title: title?.trim() || null,
         description: link,
       });
       if (error) throw error;
-
       setShowTitleModal(false);
       Alert.alert("Listo", "Link guardado en Notas ✅");
     } catch (e: any) {
@@ -178,30 +169,36 @@ export default function QRScreen() {
       </View>
 
       <View style={styles.cameraWrap}>
-        {mode === "camera" && (
-          <>
-            <CameraView
-              style={styles.camera}
-              facing="back"
-              barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
-              onBarcodeScanned={({ data }) => (!scanned ? handleBarcodeScanned(String(data)) : undefined)}
-            />
-            <View style={styles.overlay.root} pointerEvents="none">
-              <View style={styles.overlay.frame}>
-                {/* esquinas */}
-                <View style={[styles.overlay.corner, styles.overlay.tl]} />
-                <View style={[styles.overlay.corner, styles.overlay.tr]} />
-                <View style={[styles.overlay.corner, styles.overlay.bl]} />
-                <View style={[styles.overlay.corner, styles.overlay.br]} />
-                {/* línea */}
-                {!scanned && (
-                  <Animated.View
-                    style={[styles.overlay.scanLine, { transform: [{ translateY: scanLineTranslateY }] }]}
-                  />
-                )}
-              </View>
+        <CameraView
+          style={styles.camera}
+          facing="back"
+          barcodeScannerSettings={{ barcodeTypes: ["qr"] }}
+          onBarcodeScanned={({ data }) => (!scanned ? handleBarcodeScanned(String(data)) : undefined)}
+        />
+        <View style={styles.overlay.root} pointerEvents="none">
+          <View style={styles.overlay.frame}>
+            <View style={[styles.overlay.corner, styles.overlay.tl]} />
+            <View style={[styles.overlay.corner, styles.overlay.tr]} />
+            <View style={[styles.overlay.corner, styles.overlay.bl]} />
+            <View style={[styles.overlay.corner, styles.overlay.br]} />
+            {!scanned && (
+              <Animated.View
+                style={[styles.overlay.scanLine, { transform: [{ translateY: scanLineTranslateY }] }]}
+              />
+            )}
+          </View>
+        </View>
+
+        {!permission.granted && (
+          <View style={styles.overlay.root} pointerEvents="auto">
+            <View style={styles.permCard}>
+              <Ionicons name="lock-closed-outline" size={40} color="#000" style={styles.permIcon} />
+              <Text style={styles.permTitle}>Necesitamos permiso para usar la cámara</Text>
+              <TouchableOpacity style={styles.permBtn} onPress={requestPermission}>
+                <Text style={styles.permBtnText}>Dar permiso</Text>
+              </TouchableOpacity>
             </View>
-          </>
+          </View>
         )}
       </View>
 

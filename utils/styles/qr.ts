@@ -137,7 +137,6 @@ export const qrStyles = StyleSheet.create({
     gap: 8,
   },
   ghostBtnText: { color: WHITE, fontSize: 14, fontWeight: "600" },
-  permTitle: { color: WHITE, fontSize: 16, marginBottom: 12, textAlign: "center" },
   modalBackdrop: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.5)",
@@ -187,4 +186,54 @@ export const qrStyles = StyleSheet.create({
     gap: 8,
   },
   modalSaveText: { color: WHITE, fontSize: 14, fontWeight: "700" },
+
+  permCard: {
+    backgroundColor: "#fff",
+    paddingVertical: 40,
+    paddingHorizontal: 24,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    marginHorizontal: 32,
+  },
+  permIcon: { marginBottom: 8 },
+  permTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#000",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  permDesc: {
+    color: "#111",
+    textAlign: "center",
+    marginBottom: 14,
+    fontSize: 14,
+  },
+  permRow: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  permBtn: {
+    backgroundColor: "#000",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  permBtnAlt: {
+    backgroundColor: "#444",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  permBtnText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 14,
+  },
 });
