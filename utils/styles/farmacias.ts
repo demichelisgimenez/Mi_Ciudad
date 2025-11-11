@@ -1,17 +1,15 @@
-// utils/styles/farmacias.ts
 import { StyleSheet } from "react-native";
-import { sizes } from "../index";
+import { sizes } from "@utils/sizes";
 import { materialColors } from "@utils/colors";
 
 export const farmaciaStyles = StyleSheet.create({
-  // ===== Layout general
   container: {
     flex: 1,
     backgroundColor: materialColors.schemes.dark.background,
   },
   map: { flex: 1, width: "100%" },
 
-  // ===== Header overlay
+  
   headerOverlay: {
     position: "absolute",
     top: 8,
@@ -28,7 +26,6 @@ export const farmaciaStyles = StyleSheet.create({
     color: "#fff",
   },
 
-  // ===== Bottom Sheet
   bottomSheet: {
     position: "absolute",
     left: 0,
@@ -47,7 +44,7 @@ export const farmaciaStyles = StyleSheet.create({
     overflow: "hidden",
   },
 
-  // Área invisible grande para facilitar el arrastre (por encima del contenido)
+
   dragHitbox: {
     position: "absolute",
     top: 0,
@@ -57,10 +54,9 @@ export const farmaciaStyles = StyleSheet.create({
     zIndex: 10,
   },
 
-  // Handle visible (tira)
   dragStrip: {
     paddingTop: 12,
-    paddingBottom: 16, // área táctil grande
+    paddingBottom: 16,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -71,7 +67,7 @@ export const farmaciaStyles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.45)",
   },
 
-  // ===== Filtros / chips
+
   filtersRow: {
     paddingHorizontal: 14,
     paddingTop: 6,
@@ -96,7 +92,6 @@ export const farmaciaStyles = StyleSheet.create({
   chipText: { color: materialColors.schemes.dark.onSurface, fontWeight: "600" },
   chipTextActive: { color: materialColors.schemes.dark.onPrimaryContainer },
 
-  // ===== Buscador
   searchInput: {
     marginTop: 4,
     marginHorizontal: 14,
@@ -109,7 +104,6 @@ export const farmaciaStyles = StyleSheet.create({
     color: materialColors.schemes.dark.onSurface,
   },
 
-  // ===== Lista
   listWrapper: {
     flex: 1,
     marginHorizontal: 12,
@@ -130,7 +124,6 @@ export const farmaciaStyles = StyleSheet.create({
     textAlign: "center",
   },
 
-  // ===== Card
   card: {
     backgroundColor: materialColors.schemes.dark.surface,
     padding: 12,
@@ -165,7 +158,6 @@ export const farmaciaStyles = StyleSheet.create({
     fontSize: 12,
   },
 
-  // Estado (abierto/cerrado)
   pillOpen: {
     paddingHorizontal: 10,
     paddingVertical: 4,
@@ -186,7 +178,6 @@ export const farmaciaStyles = StyleSheet.create({
     fontSize: 12,
   },
 
-  // Detalle expandido
   detailContainer: {
     marginTop: 8,
     paddingTop: 10,
@@ -199,7 +190,6 @@ export const farmaciaStyles = StyleSheet.create({
     fontSize: 12.5,
   },
 
-  // Acciones
   actionsRow: {
     marginTop: 10,
     flexDirection: "row",
@@ -221,7 +211,6 @@ export const farmaciaStyles = StyleSheet.create({
     fontSize: 12.5,
   },
 
-  // ===== Marker (pin)
   markerContainerDefault: {
     width: 32,
     height: 32,
@@ -236,7 +225,6 @@ export const farmaciaStyles = StyleSheet.create({
     resizeMode: "contain",
   },
 
-  // ===== Errores
   errorText: {
     color: materialColors.schemes.dark.error,
     textAlign: "center",

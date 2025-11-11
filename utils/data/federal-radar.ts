@@ -43,7 +43,6 @@ export const FEDERAL_RADAR: FederalRadarItem[] = [
     name: "Centro FM",
     title: "FM 94.5 Centro FM",
     image: "https://elradar.ar/wp-content/uploads/Centro-FM-80x80.jpg",
-    // El Radar publica esta URL; si no corresponde, dejala y luego la ajustamos:
     streamUrl: "https://playerservices.streamtheworld.com/api/livestream-redirect/FM999_56AAC.aac",
     searchHints: ["Centro 94.5 Federal"],
   },
