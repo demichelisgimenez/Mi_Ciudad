@@ -5,6 +5,7 @@ import { DRAWER_ROUTES } from "@utils/constants";
 import { inicioStyles as styles } from "@utils/styles/inicio";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import WeatherCard from "./components/WeatherCard";
 
 export default function InicioScreen() {
   const navigation = useNavigation();
@@ -12,14 +13,7 @@ export default function InicioScreen() {
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <View style={styles.container}>
-
-        <View style={styles.weatherCard}>
-          <View>
-            <Text style={styles.weatherTitle}>Clima en Federal</Text>
-            <Text style={styles.weatherSubtitle}>Nublado</Text>
-          </View>
-          <Text style={styles.weatherTemp}>13°</Text>
-        </View>
+        <WeatherCard />
 
         <Text style={styles.title}>¿Qué querés hacer hoy?</Text>
 
