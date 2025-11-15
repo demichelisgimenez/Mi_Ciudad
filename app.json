@@ -31,7 +31,8 @@
       "expo-font",
       "expo-audio",
       "expo-video",
-      "expo-camera"
+      "expo-camera",
+      "expo-notifications"
     ]
   }
 }

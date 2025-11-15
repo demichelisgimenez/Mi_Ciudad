@@ -3,6 +3,7 @@ import { Alert } from "react-native";
 import { supabase } from "@utils/supabase";
 import { Note, EditState } from "../types";
 import { uploadImageToStorage, removeStorageByPublicUrl } from "@utils/storage";
+import * as Notifications from "expo-notifications";
 
 export function useNotes(userId: string | null) {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -27,7 +28,9 @@ export function useNotes(userId: string | null) {
       setLoadingList(true);
       const { data, error } = await supabase
         .from("notes")
-        .select("id, title, description, image_url, created_at, updated_at, user_id")
+        .select(
+          "id, title, description, image_url, created_at, updated_at, reminder_start, reminder_end, reminder_identifier, user_id"
+        )
         .eq("user_id", userId)
         .order("updated_at", { ascending: false });
       if (error) throw error;
@@ -55,13 +58,19 @@ export function useNotes(userId: string | null) {
   }, [userId, fetchNotes]);
 
   async function addNote() {
-    if (!userId) return Alert.alert("Sesión requerida", "Iniciá sesión para crear notas.");
+    if (!userId)
+      return Alert.alert("Sesión requerida", "Iniciá sesión para crear notas.");
     if (!newTitle.trim() && !newDesc.trim() && !newImageUri) {
-      return Alert.alert("Nada para guardar", "Escribí un título/descripcion o adjuntá una imagen.");
+      return Alert.alert(
+        "Nada para guardar",
+        "Escribí un título/descripcion o adjuntá una imagen."
+      );
     }
     try {
       setLoadingCreate(true);
-      const image_url = newImageUri ? await uploadImageToStorage(newImageUri, userId) : null;
+      const image_url = newImageUri
+        ? await uploadImageToStorage(newImageUri, userId)
+        : null;
       const { error } = await supabase.from("notes").insert({
         user_id: userId,
         title: newTitle.trim() || null,
@@ -90,7 +99,18 @@ export function useNotes(userId: string | null) {
     if (!confirm) return;
     try {
       await removeStorageByPublicUrl(n.image_url);
-      const { error } = await supabase.from("notes").delete().eq("id", n.id).eq("user_id", userId!);
+      if (n.reminder_identifier) {
+        try {
+          await Notifications.cancelScheduledNotificationAsync(
+            n.reminder_identifier
+          );
+        } catch {}
+      }
+      const { error } = await supabase
+        .from("notes")
+        .delete()
+        .eq("id", n.id)
+        .eq("user_id", userId!);
       if (error) throw error;
       if (editing?.id === n.id) setEditing(null);
       await fetchNotes();
@@ -119,10 +139,15 @@ export function useNotes(userId: string | null) {
       setEditing({ ...editing, saving: true });
 
       let newImageUrl: string | null | undefined = undefined;
+
       if (editing.imageUri === null) {
         await removeStorageByPublicUrl(original.image_url);
         newImageUrl = null;
-      } else if (typeof editing.imageUri === "string") {
+      } else if (
+        typeof editing.imageUri === "string" &&
+        editing.imageUri !== "PICK_CAMERA" &&
+        editing.imageUri !== "PICK_LIBRARY"
+      ) {
         const uploaded = await uploadImageToStorage(editing.imageUri, userId);
         await removeStorageByPublicUrl(original.image_url);
         newImageUrl = uploaded;
@@ -149,6 +174,87 @@ export function useNotes(userId: string | null) {
     }
   }
 
+  async function setNoteReminder(
+    note: Note,
+    start: Date,
+    end: Date
+  ): Promise<void> {
+    if (!userId) {
+      Alert.alert(
+        "Sesión requerida",
+        "Iniciá sesión para usar recordatorios."
+      );
+      return;
+    }
+    try {
+      if (note.reminder_identifier) {
+        try {
+          await Notifications.cancelScheduledNotificationAsync(
+            note.reminder_identifier
+          );
+        } catch {}
+      }
+
+      const identifier = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: note.title || "Recordatorio de nota",
+          body:
+            note.description ||
+            "Tenés un recordatorio programado en Mi Ciudad.",
+          sound: "default",
+        },
+        trigger: {
+          type: "date",
+          date: start,
+        },
+      });
+
+      const { error } = await supabase
+        .from("notes")
+        .update({
+          reminder_start: start.toISOString(),
+          reminder_end: end.toISOString(),
+          reminder_identifier: identifier,
+        })
+        .eq("id", note.id)
+        .eq("user_id", userId);
+      if (error) throw error;
+
+      await fetchNotes();
+    } catch (e: any) {
+      Alert.alert("Error", e?.message ?? "No se pudo guardar el recordatorio.");
+    }
+  }
+
+  async function clearNoteReminder(note: Note): Promise<void> {
+    if (!userId) return;
+    try {
+      if (note.reminder_identifier) {
+        try {
+          await Notifications.cancelScheduledNotificationAsync(
+            note.reminder_identifier
+          );
+        } catch {}
+      }
+      const { error } = await supabase
+        .from("notes")
+        .update({
+          reminder_start: null,
+          reminder_end: null,
+          reminder_identifier: null,
+        })
+        .eq("id", note.id)
+        .eq("user_id", userId);
+      if (error) throw error;
+      await fetchNotes();
+    } catch (e: any) {
+      Alert.alert(
+        "Error",
+        e?.message ?? "No se pudo eliminar el recordatorio."
+      );
+    }
+  }
+
   return {
     notes,
     loadingList,
@@ -169,5 +275,7 @@ export function useNotes(userId: string | null) {
     saveEdit,
     deleteNote,
     clearNotes,
+    setNoteReminder,
+    clearNoteReminder,
   };
 }

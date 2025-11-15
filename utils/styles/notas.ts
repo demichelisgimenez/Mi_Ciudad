@@ -93,6 +93,18 @@ export const notasStyles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
   },
+  noteHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 4,
+  },
+  noteMenuButton: {
+    paddingHorizontal: 6,
+    paddingVertical: 4,
+    marginLeft: 8,
+    borderRadius: 8,
+  },
   noteImage: {
     width: "100%",
     borderRadius: sizes.radius || 10,
@@ -115,7 +127,6 @@ export const notasStyles = StyleSheet.create({
     fontSize: sizes.md || 18,
     fontWeight: "bold",
     color: colors.textPrimary || "#1e1f20",
-    marginBottom: 4,
   },
   noteText: {
     fontSize: sizes.sm || 15,
@@ -128,7 +139,16 @@ export const notasStyles = StyleSheet.create({
     opacity: 0.6,
     marginTop: sizes.xs || 4,
   },
-  emptyText: { textAlign: "center", opacity: 0.6, marginTop: sizes.base || 20 },
+  noteReminder: {
+    fontSize: 12,
+    marginTop: 4,
+    color: colors.primary || "#1e3a8a",
+  },
+  emptyText: {
+    textAlign: "center",
+    opacity: 0.6,
+    marginTop: sizes.base || 20,
+  },
   cardActions: {
     flexDirection: "row",
     marginTop: sizes.sm || 8,
@@ -169,4 +189,152 @@ export const notasStyles = StyleSheet.create({
     minWidth: 0,
   },
   mr8: { marginRight: sizes.sm || 8 },
+
+  reminderMenuOverlay: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 40,
+  },
+  reminderMenuCard: {
+    backgroundColor: "#ffffff",
+    borderRadius: 20,
+    paddingHorizontal: 24,
+    paddingVertical: 22,
+    width: "82%",
+    maxWidth: 360,
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 16,
+    alignItems: "center",
+  },
+  reminderMenuIconCircle: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 16,
+  },
+  reminderMenuIconCircleReminder: {
+    backgroundColor: "#667eea",
+  },
+  reminderMenuIconCircleEdit: {
+    backgroundColor: "#f5576c",
+  },
+  reminderMenuIconCircleNotification: {
+    backgroundColor: "#fcb69f",
+  },
+  reminderMenuIconEmoji: {
+    fontSize: 30,
+    color: "#ffffff",
+  },
+  reminderMenuTitle: {
+    fontSize: 19,
+    fontWeight: "700",
+    color: "#2c3e50",
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  reminderMenuText: {
+    fontSize: 14,
+    color: "#6c757d",
+    textAlign: "center",
+    marginBottom: 14,
+  },
+
+  reminderStepsContainer: {
+    width: "100%",
+    marginBottom: 14,
+  },
+  reminderStep: {
+    backgroundColor: "#f8f9fa",
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 8,
+    borderLeftWidth: 4,
+    borderLeftColor: "#28a745",
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  reminderStepCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "#28a745",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
+    marginTop: 2,
+  },
+  reminderStepNumber: {
+    color: "#ffffff",
+    fontWeight: "700",
+    fontSize: 16,
+  },
+  reminderStepContent: {
+    flex: 1,
+  },
+  reminderStepTitle: {
+    fontWeight: "600",
+    fontSize: 14,
+    color: "#2c3e50",
+    marginBottom: 2,
+  },
+  reminderStepDescription: {
+    fontSize: 13,
+    color: "#6c757d",
+  },
+
+  reminderMenuButtonsRow: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 6,
+  },
+  reminderMenuButtonsRowSecondary: {
+    width: "100%",
+    marginTop: 10,
+  },
+  reminderMenuBtn: {
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  reminderMenuBtnPrimary: {
+    flex: 1,
+    marginRight: 6,
+    backgroundColor: "#667eea",
+  },
+  reminderMenuBtnSecondary: {
+    flex: 1,
+    marginLeft: 6,
+    backgroundColor: "#f8f9fa",
+    borderWidth: 1,
+    borderColor: "#e9ecef",
+  },
+  reminderMenuBtnDanger: {
+    width: "100%",
+    backgroundColor: "#ee5a52",
+  },
+  reminderMenuBtnText: {
+    fontSize: 15,
+    fontWeight: "600",
+  },
+  reminderMenuBtnTextPrimary: {
+    color: "#ffffff",
+  },
+  reminderMenuBtnTextSecondary: {
+    color: "#6c757d",
+  },
+  reminderMenuBtnTextDanger: {
+    color: "#ffffff",
+  },
 });

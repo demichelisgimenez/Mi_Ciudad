@@ -5,6 +5,9 @@ export type Note = {
   image_url: string | null;
   created_at: string;
   updated_at: string;
+  reminder_start?: string | null;
+  reminder_end?: string | null;
+  reminder_identifier?: string | null;
 };
 
 export type EditState =

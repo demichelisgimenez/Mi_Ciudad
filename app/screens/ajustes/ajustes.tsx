@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Switch } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, Switch, Alert } from "react-native";
 import { ajustesStyles as styles, switchColors } from "@utils/styles/ajustes";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@shared/context/AuthContext";
@@ -9,6 +9,8 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { RootStackParamList } from "@app/navigation/types";
 import { ROOT_ROUTES, AUTH_ROUTES } from "@utils/constants";
 import { AUTH_ACTIONS } from "@shared/context/AuthContext/enums";
+import * as Notifications from "expo-notifications";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type ThemeChoice = "blue" | "dark" | "light";
 
@@ -19,6 +21,15 @@ export default function Ajustes() {
   const [theme, setTheme] = useState<ThemeChoice>("blue");
   const [notifications, setNotifications] = useState<boolean>(true);
   const [signingOut, setSigningOut] = useState(false);
+
+  useEffect(() => {
+    AsyncStorage.getItem("notifications_enabled")
+      .then((v) => {
+        if (v === "0") setNotifications(false);
+        else if (v === "1") setNotifications(true);
+      })
+      .catch(() => {});
+  }, []);
 
   const handleLogin = () => {
     navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.LOGIN });
@@ -37,10 +48,42 @@ export default function Ajustes() {
     }
   };
 
+  const handleToggleNotifications = async (value: boolean) => {
+    setNotifications(value);
+    try {
+      await AsyncStorage.setItem("notifications_enabled", value ? "1" : "0");
+    } catch {}
+
+    if (value) {
+      const { status } = await Notifications.getPermissionsAsync();
+      if (status !== "granted") {
+        const req = await Notifications.requestPermissionsAsync();
+        if (req.status !== "granted") {
+          setNotifications(false);
+          try {
+            await AsyncStorage.setItem("notifications_enabled", "0");
+          } catch {}
+          Alert.alert(
+            "Permisos requeridos",
+            "No se pudieron habilitar las notificaciones. Revisá los permisos del sistema."
+          );
+        }
+      }
+    } else {
+      try {
+        await Notifications.cancelAllScheduledNotificationsAsync();
+      } catch {}
+    }
+  };
+
   const ThemeOption = ({ label, value }: { label: string; value: ThemeChoice }) => {
     const isSelected = theme === value;
     return (
-      <TouchableOpacity activeOpacity={0.9} onPress={() => setTheme(value)} style={styles.themeOption}>
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={() => setTheme(value)}
+        style={styles.themeOption}
+      >
         <View
           style={[
             styles.themeDot,
@@ -82,7 +125,7 @@ export default function Ajustes() {
           <View style={styles.iconCircle}>
             <Ionicons name="notifications-outline" size={18} style={styles.iconNeutral} />
           </View>
-          <View className="styles.cardHeaderText">
+          <View style={styles.cardHeaderText}>
             <Text style={styles.cardTitle}>Notificaciones</Text>
             <Text style={styles.cardSubtitle}>Recibir alertas y actualizaciones</Text>
           </View>
@@ -90,7 +133,7 @@ export default function Ajustes() {
           <View style={styles.flexSpacer} />
           <Switch
             value={notifications}
-            onValueChange={setNotifications}
+            onValueChange={handleToggleNotifications}
             thumbColor={notifications ? switchColors.thumbOn : switchColors.thumbOff}
             trackColor={{ false: switchColors.trackOff, true: switchColors.trackOn }}
           />
@@ -110,7 +153,9 @@ export default function Ajustes() {
             </View>
 
             <View style={styles.cardHeaderText}>
-              <Text style={styles.logoutTitle}>{signingOut ? "Cerrando sesión..." : "Cerrar Sesión"}</Text>
+              <Text style={styles.logoutTitle}>
+                {signingOut ? "Cerrando sesión..." : "Cerrar Sesión"}
+              </Text>
               <Text style={styles.logoutSubtitle}>Salir de tu cuenta</Text>
             </View>
 
@@ -119,7 +164,11 @@ export default function Ajustes() {
           </View>
         </TouchableOpacity>
       ) : (
-        <TouchableOpacity activeOpacity={0.9} onPress={handleLogin} style={[styles.card, styles.loginCard]}>
+        <TouchableOpacity
+          activeOpacity={0.9}
+          onPress={handleLogin}
+          style={[styles.card, styles.loginCard]}
+        >
           <View style={styles.logoutRow}>
             <View style={[styles.iconCircle, styles.loginIconCircle]}>
               <Ionicons name="log-in-outline" size={18} style={styles.iconLogin} />
