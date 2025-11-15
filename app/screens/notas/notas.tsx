@@ -72,20 +72,28 @@ export default function NotasScreen() {
   const normalizedEditing: EditState = useMemo(() => editing, [editing]);
 
   useEffect(() => {
-    if (normalizedEditing && typeof normalizedEditing.imageUri === "string") {
-      if (normalizedEditing.imageUri === ("PICK_CAMERA" as any)) {
-        setEditing({ ...normalizedEditing, imageUri: undefined });
-        pickImage("camera").then((uri) => {
-          if (uri) setNewImageUri(uri);
-        });
-      } else if (normalizedEditing.imageUri === ("PICK_LIBRARY" as any)) {
-        setEditing({ ...normalizedEditing, imageUri: undefined });
-        pickImage("library").then((uri) => {
-          if (uri) setNewImageUri(uri);
-        });
-      }
+    if (!normalizedEditing) return;
+
+    if (normalizedEditing.imageUri === ("PICK_CAMERA" as any)) {
+      setEditing({ ...normalizedEditing, imageUri: undefined });
+      pickImage("camera").then((uri) => {
+        if (uri) {
+          setEditing((prev) =>
+            prev && prev.id === normalizedEditing.id ? { ...prev, imageUri: uri } : prev
+          );
+        }
+      });
+    } else if (normalizedEditing.imageUri === ("PICK_LIBRARY" as any)) {
+      setEditing({ ...normalizedEditing, imageUri: undefined });
+      pickImage("library").then((uri) => {
+        if (uri) {
+          setEditing((prev) =>
+            prev && prev.id === normalizedEditing.id ? { ...prev, imageUri: uri } : prev
+          );
+        }
+      });
     }
-  }, [normalizedEditing, setEditing, setNewImageUri]);
+  }, [normalizedEditing, setEditing]);
 
   const scrollY = useRef(new Animated.Value(0)).current;
   const [headerMeasuredH, setHeaderMeasuredH] = useState(0);
@@ -145,7 +153,12 @@ export default function NotasScreen() {
               borderBottomColor: (colors as any)?.border || "#ddd",
             }}
           >
-            <Text style={[styles.title, { fontSize: r.titleSize, marginBottom: r.isLandscape ? 8 : 12 }]}>
+            <Text
+              style={[
+                styles.title,
+                { fontSize: r.titleSize, marginBottom: r.isLandscape ? 8 : 12 },
+              ]}
+            >
               Mis Notas
             </Text>
 
@@ -157,7 +170,10 @@ export default function NotasScreen() {
                       title="Iniciar Sesión"
                       icon="log-in-outline"
                       onPress={() =>
-                        navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.LOGIN } as never)
+                        navigation.navigate(
+                          ROOT_ROUTES.AUTH,
+                          { screen: AUTH_ROUTES.LOGIN } as never
+                        )
                       }
                       fullWidth
                     />
@@ -168,7 +184,10 @@ export default function NotasScreen() {
                       icon="person-add-outline"
                       variant="outline"
                       onPress={() =>
-                        navigation.navigate(ROOT_ROUTES.AUTH, { screen: AUTH_ROUTES.REGISTER } as never)
+                        navigation.navigate(
+                          ROOT_ROUTES.AUTH,
+                          { screen: AUTH_ROUTES.REGISTER } as never
+                        )
                       }
                       fullWidth
                     />
@@ -228,10 +247,14 @@ export default function NotasScreen() {
               />
             }
             ListEmptyComponent={
-              isLogged && !loadingList ? <Text style={styles.emptyText}>No tenés notas todavía.</Text> : null
+              isLogged && !loadingList ? (
+                <Text style={styles.emptyText}>No tenés notas todavía.</Text>
+              ) : null
             }
             ListFooterComponent={
-              isLogged && (loadingList || canShowMore) ? <ActivityIndicator style={{ marginVertical: 8 }} /> : null
+              isLogged && (loadingList || canShowMore) ? (
+                <ActivityIndicator style={{ marginVertical: 8 }} />
+              ) : null
             }
             onEndReachedThreshold={0.3}
             onEndReached={() => {
@@ -268,7 +291,9 @@ export default function NotasScreen() {
               <Button
                 title="Nueva nota"
                 icon="add"
-                onPress={() => listRef.current?.scrollToOffset({ offset: 0, animated: true })}
+                onPress={() =>
+                  listRef.current?.scrollToOffset({ offset: 0, animated: true })
+                }
                 style={{ minWidth: r.isTablet ? 160 : 140 }}
               />
             </View>
