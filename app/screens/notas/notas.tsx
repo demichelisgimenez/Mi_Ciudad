@@ -1,3 +1,4 @@
+// app/screens/notas/notas.tsx
 import React, {
   useMemo,
   useCallback,
@@ -33,12 +34,13 @@ import { useNotes } from "./hooks/use-notes";
 import Composer from "./components/composer";
 import Card from "./components/card";
 import { pickImage } from "@utils/picker";
-import { EditState, Note } from "./types";
+import { EditState, Note, ReminderMenuContext } from "./types";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ReminderMenu from "./components/ReminderMenu";
+import { useReminderPicker } from "./hooks/use-reminder-picker";
 
 type NoteItem = any;
-type ReminderMenuContext = "notificationsOff" | "noReminder" | "hasReminder";
 
 export default function NotasScreen() {
   const r = useResponsive();
@@ -135,12 +137,18 @@ export default function NotasScreen() {
   const canShowMore =
     isLogged && !loadingList && visibleCount < (notes?.length || 0);
 
-  const [reminderNote, setReminderNote] = useState<Note | null>(null);
-  const [baseDate, setBaseDate] = useState<Date>(new Date());
-  const [startDate, setStartDate] = useState<Date | null>(null);
-  const [pickerStep, setPickerStep] =
-    useState<"date" | "startTime" | "endTime" | null>(null);
+  // --- Picker de fecha/hora para recordatorios (hook) ---
+  const {
+    reminderNote,
+    baseDate,
+    pickerStep,
+    openForNote,
+    handleDateTimeChange,
+  } = useReminderPicker({
+    onConfirm: setNoteReminder,
+  });
 
+  // --- Menú contextual de recordatorio ---
   const [reminderMenuVisible, setReminderMenuVisible] = useState(false);
   const [reminderMenuNote, setReminderMenuNote] = useState<Note | null>(null);
   const [reminderMenuContext, setReminderMenuContext] =
@@ -160,13 +168,7 @@ export default function NotasScreen() {
   const contentPadTop = headerMeasuredH;
 
   const handleOpenReminderPicker = (note: Note) => {
-    const initial = note.reminder_start
-      ? new Date(note.reminder_start)
-      : new Date(Date.now() + 10 * 60 * 1000);
-    setReminderNote(note);
-    setBaseDate(initial);
-    setStartDate(null);
-    setPickerStep("date");
+    openForNote(note);
   };
 
   const handleReminderOptions = (note: Note, ctx: ReminderMenuContext) => {
@@ -179,64 +181,6 @@ export default function NotasScreen() {
     setReminderMenuVisible(false);
     setReminderMenuNote(null);
     setReminderMenuContext(null);
-  };
-
-  const handleDateTimeChange = (event: any, selected?: Date) => {
-    if (!pickerStep) return;
-
-    if (Platform.OS === "android" && event?.type === "dismissed") {
-      setPickerStep(null);
-      setReminderNote(null);
-      setStartDate(null);
-      return;
-    }
-
-    if (!selected) return;
-
-    if (pickerStep === "date") {
-      const merged = new Date(
-        selected.getFullYear(),
-        selected.getMonth(),
-        selected.getDate(),
-        baseDate.getHours(),
-        baseDate.getMinutes()
-      );
-      setBaseDate(merged);
-      setPickerStep("startTime");
-    } else if (pickerStep === "startTime") {
-      const start = new Date(
-        baseDate.getFullYear(),
-        baseDate.getMonth(),
-        baseDate.getDate(),
-        selected.getHours(),
-        selected.getMinutes()
-      );
-      setStartDate(start);
-      setPickerStep("endTime");
-    } else if (pickerStep === "endTime") {
-      if (!reminderNote) {
-        setPickerStep(null);
-        setStartDate(null);
-        setReminderNote(null);
-        return;
-      }
-      const finalStart = startDate || baseDate;
-      let end = new Date(
-        finalStart.getFullYear(),
-        finalStart.getMonth(),
-        finalStart.getDate(),
-        selected.getHours(),
-        selected.getMinutes()
-      );
-      if (end.getTime() <= finalStart.getTime()) {
-        end = new Date(finalStart.getTime() + 30 * 60 * 1000);
-      }
-      const targetNote = reminderNote;
-      setPickerStep(null);
-      setStartDate(null);
-      setReminderNote(null);
-      setNoteReminder(targetNote, finalStart, end);
-    }
   };
 
   const renderItem = ({ item }: ListRenderItemInfo<NoteItem>) => (
@@ -255,48 +199,6 @@ export default function NotasScreen() {
     />
   );
 
-  let menuEmoji = "";
-  let menuIconStyle = styles.reminderMenuIconCircleReminder;
-
-  if (reminderMenuContext === "notificationsOff") {
-    menuEmoji = "🔔";
-    menuIconStyle = styles.reminderMenuIconCircleNotification;
-  } else if (reminderMenuContext === "noReminder") {
-    menuEmoji = "⏰";
-    menuIconStyle = styles.reminderMenuIconCircleReminder;
-  } else if (reminderMenuContext === "hasReminder") {
-    menuEmoji = "✏️";
-    menuIconStyle = styles.reminderMenuIconCircleEdit;
-  }
-
-  let menuTitle = "";
-  let menuText = "";
-  let primaryLabel = "";
-  let secondaryLabel = "";
-  let tertiaryLabel: string | null = null;
-
-  if (reminderMenuContext === "notificationsOff") {
-    menuTitle = "Activar notificaciones";
-    menuText =
-      "Para agregar recordatorios necesitás activar las notificaciones en Ajustes.";
-    primaryLabel = "Ir a Ajustes";
-    secondaryLabel = "Cerrar";
-  } else if (reminderMenuContext === "noReminder") {
-    menuTitle = "Agregar recordatorio";
-    menuText =
-      "Vas a elegir una fecha y un rango horario para esta nota. Te avisamos al inicio.";
-    primaryLabel = "Elegir fecha y hora";
-    secondaryLabel = "Cancelar";
-  } else if (reminderMenuContext === "hasReminder") {
-  menuTitle = "Recordatorio de esta nota";
-  menuText =
-    "Podés cambiar el rango horario o quitar el recordatorio si ya no lo necesitás.";
-  primaryLabel = "Editar";
-  secondaryLabel = "Cancelar";
-  tertiaryLabel = "Borrar";
-  }
-
-
   return (
     <Screen edges={["left", "right", "bottom"]} centerContent>
       <KeyboardAvoidingView
@@ -305,6 +207,7 @@ export default function NotasScreen() {
         keyboardVerticalOffset={keyboardOffset}
       >
         <View style={[styles.container, { flex: 1 }]}>
+          {/* HEADER / COMPOSER */}
           <Animated.View
             onLayout={onHeaderLayout}
             style={{
@@ -403,6 +306,7 @@ export default function NotasScreen() {
             )}
           </Animated.View>
 
+          {/* LISTA DE NOTAS */}
           <Animated.FlatList
             ref={listRef}
             data={slicedData}
@@ -454,6 +358,7 @@ export default function NotasScreen() {
             removeClippedSubviews
           />
 
+          {/* BOTÓN FLOTANTE "NUEVA NOTA" */}
           {isLogged && scrollPos > headerMeasuredH + 60 && (
             <View
               style={{
@@ -474,6 +379,7 @@ export default function NotasScreen() {
             </View>
           )}
 
+          {/* PICKER DE FECHA/HORA */}
           {pickerStep && reminderNote && (
             <DateTimePicker
               value={baseDate}
@@ -483,138 +389,18 @@ export default function NotasScreen() {
             />
           )}
 
-          {reminderMenuVisible &&
-            reminderMenuNote &&
-            reminderMenuContext && (
-              <View style={styles.reminderMenuOverlay}>
-                <View style={styles.reminderMenuCard}>
-                  <View style={[styles.reminderMenuIconCircle, menuIconStyle]}>
-                    <Text style={styles.reminderMenuIconEmoji}>{menuEmoji}</Text>
-                  </View>
-                  <Text style={styles.reminderMenuTitle}>{menuTitle}</Text>
-                  <Text style={styles.reminderMenuText}>{menuText}</Text>
-
-                  {reminderMenuContext === "noReminder" && (
-                    <View style={styles.reminderStepsContainer}>
-                      <View style={styles.reminderStep}>
-                        <View style={styles.reminderStepCircle}>
-                          <Text style={styles.reminderStepNumber}>1</Text>
-                        </View>
-                        <View style={styles.reminderStepContent}>
-                          <Text style={styles.reminderStepTitle}>
-                            Seleccioná la fecha
-                          </Text>
-                          <Text style={styles.reminderStepDescription}>
-                            Tocá el calendario y elegí el día del recordatorio.
-                          </Text>
-                        </View>
-                      </View>
-                      <View style={styles.reminderStep}>
-                        <View style={styles.reminderStepCircle}>
-                          <Text style={styles.reminderStepNumber}>2</Text>
-                        </View>
-                        <View style={styles.reminderStepContent}>
-                          <Text style={styles.reminderStepTitle}>
-                            Hora de inicio
-                          </Text>
-                          <Text style={styles.reminderStepDescription}>
-                            Usá el reloj para definir cuándo empieza el
-                            recordatorio.
-                          </Text>
-                        </View>
-                      </View>
-                      <View style={styles.reminderStep}>
-                        <View style={styles.reminderStepCircle}>
-                          <Text style={styles.reminderStepNumber}>3</Text>
-                        </View>
-                        <View style={styles.reminderStepContent}>
-                          <Text style={styles.reminderStepTitle}>
-                            Hora de fin
-                          </Text>
-                          <Text style={styles.reminderStepDescription}>
-                            Elegí hasta qué hora dura el recordatorio.
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
-                  )}
-
-                  <View style={styles.reminderMenuButtonsRow}>
-                    <TouchableOpacity
-                      style={[styles.reminderMenuBtn, styles.reminderMenuBtnPrimary]}
-                      onPress={() => {
-                        if (reminderMenuContext === "notificationsOff") {
-                          closeReminderMenu();
-                          navigation.navigate(DRAWER_ROUTES.AJUSTES as never);
-                        } else if (
-                          reminderMenuContext === "noReminder" ||
-                          reminderMenuContext === "hasReminder"
-                        ) {
-                          const n = reminderMenuNote;
-                          closeReminderMenu();
-                          if (n) {
-                            handleOpenReminderPicker(n);
-                          }
-                        }
-                      }}
-                    >
-                      <Text
-                        style={[
-                          styles.reminderMenuBtnText,
-                          styles.reminderMenuBtnTextPrimary,
-                        ]}
-                      >
-                        {primaryLabel}
-                      </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      style={[
-                        styles.reminderMenuBtn,
-                        styles.reminderMenuBtnSecondary,
-                      ]}
-                      onPress={closeReminderMenu}
-                    >
-                      <Text
-                        style={[
-                          styles.reminderMenuBtnText,
-                          styles.reminderMenuBtnTextSecondary,
-                        ]}
-                      >
-                        {secondaryLabel}
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-
-                  {tertiaryLabel && (
-                    <View style={styles.reminderMenuButtonsRowSecondary}>
-                      <TouchableOpacity
-                        style={[
-                          styles.reminderMenuBtn,
-                          styles.reminderMenuBtnDanger,
-                        ]}
-                        onPress={() => {
-                          const n = reminderMenuNote;
-                          closeReminderMenu();
-                          if (n) {
-                            clearNoteReminder(n);
-                          }
-                        }}
-                      >
-                        <Text
-                          style={[
-                            styles.reminderMenuBtnText,
-                            styles.reminderMenuBtnTextDanger,
-                          ]}
-                        >
-                          {tertiaryLabel}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  )}
-                </View>
-              </View>
-            )}
+          {/* MENÚ DE RECORDATORIO */}
+          <ReminderMenu
+            visible={!!(reminderMenuVisible && reminderMenuNote && reminderMenuContext)}
+            note={reminderMenuNote}
+            context={reminderMenuContext}
+            onClose={closeReminderMenu}
+            onGoToSettings={() =>
+              navigation.navigate(DRAWER_ROUTES.AJUSTES as never)
+            }
+            onOpenPicker={handleOpenReminderPicker}
+            onClearReminder={clearNoteReminder}
+          />
         </View>
       </KeyboardAvoidingView>
     </Screen>

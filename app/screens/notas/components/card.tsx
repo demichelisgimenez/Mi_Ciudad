@@ -8,10 +8,8 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { notasStyles as styles } from "@utils/styles/notas";
-import type { EditState, Note } from "../types";
+import type { EditState, Note, ReminderMenuContext } from "../types";
 import { useImageRatio } from "@utils/use-image-ratio";
-
-type ReminderMenuContext = "notificationsOff" | "noReminder" | "hasReminder";
 
 type Props = {
   note: Note;

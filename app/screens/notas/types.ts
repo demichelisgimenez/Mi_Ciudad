@@ -19,3 +19,5 @@ export type EditState =
       imageUri?: string | null;
       saving?: boolean;
     };
+
+export type ReminderMenuContext = "notificationsOff" | "noReminder" | "hasReminder";
