@@ -22,6 +22,7 @@ import { colors, sizes } from "@utils";
 
 const TITLE_TOP = 16;
 const LINKS_GAP = 10;
+const RESET_REDIRECT_URL = process.env.EXPO_PUBLIC_SUPABASE_RESET_REDIRECT_URL!;
 
 export default function Login() {
   const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
@@ -29,6 +30,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
   const onLogin = async () => {
     try {
@@ -52,6 +54,28 @@ export default function Login() {
       Alert.alert("Error", e?.message ?? "No se pudo iniciar sesión.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const onForgotPassword = async () => {
+    try {
+      if (!email) {
+        Alert.alert("Ups", "Ingresá tu email para recuperar la contraseña.");
+        return;
+      }
+      setResetting(true);
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: RESET_REDIRECT_URL,
+      });
+      if (error) throw error;
+      Alert.alert(
+        "Listo",
+        "Si el email está registrado, vas a recibir un enlace para restablecer tu contraseña."
+      );
+    } catch (e: any) {
+      Alert.alert("Error", e?.message ?? "No se pudo enviar el correo de recuperación.");
+    } finally {
+      setResetting(false);
     }
   };
 
@@ -87,7 +111,7 @@ export default function Login() {
               keyboardType="email-address"
               value={email}
               onChangeText={setEmail}
-              editable={!loading}
+              editable={!loading && !resetting}
             />
 
             <View style={[styles.input, { flexDirection: "row", alignItems: "center" }]}>
@@ -97,7 +121,7 @@ export default function Login() {
                 secureTextEntry={!showPass}
                 value={pass}
                 onChangeText={setPass}
-                editable={!loading}
+                editable={!loading && !resetting}
               />
               <TouchableOpacity onPress={() => setShowPass(!showPass)} hitSlop={8}>
                 <Ionicons
@@ -121,13 +145,19 @@ export default function Login() {
               <TouchableOpacity
                 style={styles.linkButton}
                 onPress={() => navigation.navigate(AUTH_ROUTES.REGISTER as never)}
-                disabled={loading}
+                disabled={loading || resetting}
               >
                 <Text style={styles.linkText}>¿No tenés cuenta? Registrate</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.linkButton} disabled>
-                <Text style={styles.linkText}>¿Olvidaste tu contraseña?</Text>
+              <TouchableOpacity
+                style={styles.linkButton}
+                onPress={onForgotPassword}
+                disabled={loading || resetting}
+              >
+                <Text style={styles.linkText}>
+                  {resetting ? "Enviando enlace..." : "¿Olvidaste tu contraseña?"}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
