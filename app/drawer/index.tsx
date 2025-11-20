@@ -1,6 +1,10 @@
 import React from "react";
-import { View, Text, TouchableOpacity } from "react-native";
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from "@react-navigation/drawer";
+import { View, Text, TouchableOpacity, Image } from "react-native";
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+  DrawerItemList
+} from "@react-navigation/drawer";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import { DRAWER_ROUTES, ROOT_ROUTES, AUTH_ROUTES } from "@utils/constants";
@@ -18,7 +22,7 @@ import Ajustes from "@app/screens/ajustes";
 
 const Drawer = createDrawerNavigator();
 
-function UserStatusFooter({ navigation }: { navigation: any }) {
+function SessionFooter({ navigation }: { navigation: any }) {
   const { state } = useAuth();
   const loggedIn = !!state?.user;
 
@@ -46,11 +50,34 @@ function UserStatusFooter({ navigation }: { navigation: any }) {
   );
 }
 
+function AppCreditsFooter() {
+  return (
+    <View style={ds.footerMetaContainer}>
+      <Image
+        source={require("../../assets/icon.png")}
+        style={ds.footerLogo}
+        resizeMode="contain"
+      />
+      <Text style={ds.footerAppName}>© 2025 · Mi Ciudad</Text>
+      <Text style={ds.footerDevelopers}>
+        Desarrollado por Agustín Demichelis y Enzo Daniel Gimenez Silva
+      </Text>
+    </View>
+  );
+}
+
 function CustomDrawerContent(props: any) {
   return (
-    <DrawerContentScrollView {...props}>
-      <DrawerItemList {...props} />
-      <UserStatusFooter navigation={props.navigation} />
+    <DrawerContentScrollView
+      {...props}
+      contentContainerStyle={{ flex: 1, justifyContent: "space-between" }}
+    >
+      <View>
+        <DrawerItemList {...props} />
+        <SessionFooter navigation={props.navigation} />
+      </View>
+
+      <AppCreditsFooter />
     </DrawerContentScrollView>
   );
 }
