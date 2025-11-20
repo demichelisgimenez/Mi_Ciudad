@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { DRAWER_ROUTES } from "@utils/constants";
 import { inicioStyles as styles } from "@utils/styles/inicio";
@@ -11,6 +11,7 @@ import { colors } from "@utils";
 import { useReminders } from "./hooks/use-reminders";
 import RemindersBell from "./components/RemindersBell";
 import RemindersList from "./components/RemindersList";
+import UsefulPhonesSection from "./components/UsefulPhonesSection";
 
 export default function InicioScreen() {
   const navigation = useNavigation();
@@ -27,6 +28,7 @@ export default function InicioScreen() {
   } = useReminders(userId);
 
   const [showReminders, setShowReminders] = useState(false);
+  const [showPhones, setShowPhones] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -36,7 +38,10 @@ export default function InicioScreen() {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
-      <View style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{ paddingBottom: 24 }}
+      >
         <WeatherCard />
 
         {/* Título + campanita de recordatorios */}
@@ -143,7 +148,21 @@ export default function InicioScreen() {
             <Text style={styles.cardSubtitle}>Preferencias</Text>
           </TouchableOpacity>
         </View>
-      </View>
+
+        <TouchableOpacity
+          style={styles.usefulPhonesButton}
+          onPress={() => setShowPhones((v) => !v)}
+        >
+          <MaterialIcons
+            name="phone-in-talk"
+            size={22}
+            style={styles.usefulPhonesButtonIcon}
+          />
+          <Text style={styles.usefulPhonesButtonText}>Teléfonos útiles</Text>
+        </TouchableOpacity>
+
+        {showPhones && <UsefulPhonesSection />}
+      </ScrollView>
     </SafeAreaView>
   );
 }
