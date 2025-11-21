@@ -17,6 +17,7 @@ export const DRAWER_ROUTES = {
   LOGIN: "Login",
   NOTAS: "Notas",
   AJUSTES: "Ajustes",
+  SOBRE_MI_CIUDAD: "Sobre Mi Ciudad",
 };
 
 export type RadioStation = {

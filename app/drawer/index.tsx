@@ -19,6 +19,7 @@ import Radios from "@app/screens/radios";
 import Notas from "@app/screens/notas";
 import QR from "@app/screens/qr";
 import Ajustes from "@app/screens/ajustes";
+import SobreMiCiudadScreen from "@app/screens/sobreMiCiudad";
 
 const Drawer = createDrawerNavigator();
 
@@ -137,6 +138,14 @@ export default function DrawerNavigator({ route }: any) {
         component={QR}
         options={{
           drawerIcon: ({ color, size }) => <MaterialIcons name="qr-code-scanner" size={size} color={color} />,
+        }}
+      />
+      <Drawer.Screen
+        name={DRAWER_ROUTES.SOBRE_MI_CIUDAD}
+        component={SobreMiCiudadScreen}
+        options={{
+          title: "Sobre Mi Ciudad",
+          drawerIcon: ({ color, size }) => <MaterialIcons name="info" size={size} color={color} />,
         }}
       />
       <Drawer.Screen

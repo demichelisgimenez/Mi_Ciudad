@@ -7,7 +7,6 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import WeatherCard from "./components/WeatherCard";
 import { useAuth } from "@shared/context/AuthContext";
-import { colors } from "@utils";
 import { useReminders } from "./hooks/use-reminders";
 import RemindersBell from "./components/RemindersBell";
 import RemindersList from "./components/RemindersList";
@@ -40,11 +39,11 @@ export default function InicioScreen() {
     <SafeAreaView style={styles.safeArea} edges={["top"]}>
       <ScrollView
         style={styles.container}
-        contentContainerStyle={{ paddingBottom: 24 }}
+        contentContainerStyle={{ paddingBottom: 32 }}
+        showsVerticalScrollIndicator={false}
       >
         <WeatherCard />
 
-        {/* Título + campanita de recordatorios */}
         <View
           style={{
             flexDirection: "row",
@@ -63,7 +62,6 @@ export default function InicioScreen() {
           />
         </View>
 
-        {/* Panel de recordatorios */}
         <RemindersList
           visible={!!userId && showReminders}
           userId={userId}
@@ -76,7 +74,6 @@ export default function InicioScreen() {
           }
         />
 
-        {/* GRID PRINCIPAL */}
         <View style={styles.grid}>
           <TouchableOpacity
             style={styles.card}
@@ -148,6 +145,21 @@ export default function InicioScreen() {
             <Text style={styles.cardSubtitle}>Preferencias</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Botón Sobre Mi Ciudad, mismo estilo que Teléfonos útiles */}
+        <TouchableOpacity
+          style={[styles.usefulPhonesButton, { marginTop: 24 }]}
+          onPress={() =>
+            navigation.navigate(DRAWER_ROUTES.SOBRE_MI_CIUDAD as never)
+          }
+        >
+          <MaterialIcons
+            name="info-outline"
+            size={22}
+            style={styles.usefulPhonesButtonIcon}
+          />
+          <Text style={styles.usefulPhonesButtonText}>Sobre Mi Ciudad</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.usefulPhonesButton}
