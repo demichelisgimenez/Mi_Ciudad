@@ -21,7 +21,13 @@
       },
       "edgeToEdgeEnabled": true,
       "softwareKeyboardLayoutMode": "pan",
-      "usesCleartextTraffic": true
+      "usesCleartextTraffic": true,
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.CAMERA"
+      ],
+      "package": "com.demichelisgimenez.miciudad"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -32,7 +38,13 @@
       "expo-audio",
       "expo-video",
       "expo-camera",
-      "expo-notifications"
-    ]
+      "expo-notifications",
+      "expo-asset"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "2fdb9d15-f242-4ebd-b39f-0b6d380a017c"
+      }
+    }
   }
 }

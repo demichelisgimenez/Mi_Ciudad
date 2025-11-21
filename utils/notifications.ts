@@ -27,11 +27,14 @@ export async function requestNotificationPermissions() {
       importance: Notifications.AndroidImportance.MAX,
     });
   }
+
   const settings = await Notifications.getPermissionsAsync();
   if (settings.status === "granted") return true;
+
   const req = await Notifications.requestPermissionsAsync({
     ios: { allowAlert: true, allowBadge: true, allowSound: true },
   });
+
   return req.status === "granted";
 }
 
@@ -52,8 +55,13 @@ export async function scheduleNoteReminder(params: ScheduleNoteReminderParams) {
     throw new Error("No se pudieron obtener permisos de notificaciones.");
   }
 
+  if (params.date.getTime() <= Date.now()) {
+    throw new Error("La fecha del recordatorio ya pasó. Elegí un horario futuro.");
+  }
+
   const title =
     params.title && params.title.trim().length > 0 ? params.title : "Recordatorio de nota";
+
   const body =
     params.description && params.description.trim().length > 0
       ? params.description.slice(0, 120)
@@ -65,7 +73,9 @@ export async function scheduleNoteReminder(params: ScheduleNoteReminderParams) {
       body,
       data: { type: "NOTE_REMINDER", noteId: params.noteId },
     },
-    trigger: params.date,
+    // Forzamos el tipo para evitar el error de TS, pero Expo
+    // admite perfectamente un Date como trigger.
+    trigger: params.date as any,
   });
 
   return id;

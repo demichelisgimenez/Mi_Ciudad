@@ -13,6 +13,7 @@ import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "@components/Button";
 import { colors, sizes } from "@utils";
+import { setNotificationsEnabled } from "@utils/notifications";
 
 type ThemeChoice = "blue" | "dark" | "light";
 
@@ -32,8 +33,13 @@ export default function Ajustes() {
   useEffect(() => {
     AsyncStorage.getItem("notifications_enabled")
       .then((v) => {
-        if (v === "0") setNotifications(false);
-        else if (v === "1") setNotifications(true);
+        if (v === "0") {
+          setNotifications(false);
+          setNotificationsEnabled(false);
+        } else {
+          setNotifications(true);
+          setNotificationsEnabled(true);
+        }
       })
       .catch(() => {});
   }, []);
@@ -57,6 +63,7 @@ export default function Ajustes() {
 
   const handleToggleNotifications = async (value: boolean) => {
     setNotifications(value);
+    setNotificationsEnabled(value);
     try {
       await AsyncStorage.setItem("notifications_enabled", value ? "1" : "0");
     } catch {}
@@ -67,6 +74,7 @@ export default function Ajustes() {
         const req = await Notifications.requestPermissionsAsync();
         if (req.status !== "granted") {
           setNotifications(false);
+          setNotificationsEnabled(false);
           try {
             await AsyncStorage.setItem("notifications_enabled", "0");
           } catch {}
