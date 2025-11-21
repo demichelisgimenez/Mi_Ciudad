@@ -21,13 +21,16 @@ Está pensada para los habitantes de **Federal (Entre Ríos, Argentina)** y ofre
 
 ## 🧩 Descripción general de la app
 
-- Información actualizada de **farmacias** y **escuelas** de la ciudad, con mapa, filtros y datos de contacto.
-- Sección de **radios locales** con reproducción en vivo y **reproductor flotante** que acompaña al usuario en toda la app.
-- Módulo de **notas personales** con posibilidad de agregar imágenes y programar **recordatorios con notificaciones locales**.
-- **Teléfonos útiles** organizados por categoría para llamar con un solo toque.
-- **Lector QR** que permite escanear códigos, abrir enlaces o guardar el QR como nota.
-- Sistema de **autenticación de usuarios** con registro, inicio de sesión, recuperación y cambio de contraseña.
-- Pantalla de **ajustes** para gestionar preferencias y la cuenta del usuario.
+La aplicación integra funcionalidades informativas y herramientas personales orientadas a los habitantes de Federal:
+
+- Acceso a **información actualizada de farmacias y escuelas**, con mapa interactivo, datos de contacto y filtros por categoría.
+- Reproducción de **radios locales en vivo**, acompañada por un **reproductor flotante** activo en toda la app.
+- Gestión de **notas personales**, con soporte para imágenes y programación de **recordatorios mediante notificaciones locales**.
+- Listado de **teléfonos útiles** organizados por categoría, con opción de llamada directa.
+- **Lector de códigos QR**, con apertura de enlaces o guardado del contenido como nota.
+- Sistema de **autenticación de usuarios**, con registro, inicio de sesión, recuperación y cambio de contraseña.
+- Pantalla informativa **“Sobre Mi Ciudad”**, que detalla el propósito de la app y su contexto académico.
+- Sección de **Ajustes**, destinada a la gestión de cuenta y preferencias básicas.
 
 ---
 
@@ -83,9 +86,11 @@ Pantalla principal de la app. Muestra:
   - Notas
   - QR
   - Ajustes
+- Botón de **Sobre Mi Ciudad**.
 - Botón destacado de **Teléfonos útiles**.
 
 🖼️ ![Screenshots del inicio](./assets/screenshots/inicio.png)
+
 ---
 
 ### 📞 Teléfonos útiles
@@ -114,6 +119,7 @@ Menú de navegación con acceso a todas las secciones:
 - Radios
 - Notas
 - QR
+-Sobre Mi Ciudad
 - Ajustes
 
 Al final del menú se muestra la opción **“Iniciar sesión / Registrarme”** si el usuario no está autenticado, y el crédito con el copyright del proyecto.
@@ -271,6 +277,20 @@ Herramienta para trabajar con códigos QR:
 🖼️ ![Screenshots de QR](./assets/screenshots/qr4.png)
 ---
 
+### 🏙️ Sobre Mi Ciudad
+
+Pantalla informativa sobre la aplicación:
+
+- Explica el **propósito general de la app**, destacando cómo facilita el acceso rápido a información local y herramientas útiles para los habitantes de Federal.
+- Brinda datos sobre los **autores del proyecto** y la **institución académica (UNER)**, indicando que fue desarrollada como trabajo final para la materia *Desarrollo de Aplicaciones Móviles*.
+- Describe brevemente las principales **funcionalidades disponibles** y cómo contribuyen a mejorar la experiencia del usuario.
+- Incluye un **botón para acceder al video promocional** de la aplicación.
+
+🖼️ ![Screenshots de Sobre Mi Ciudad](./assets/screenshots/sobreMiCiudad.png)  
+🖼️ ![Screenshots de Sobre Mi Ciudad](./assets/screenshots/sobreMiCiudad2.png)
+
+
+
 ### ⚙️ Ajustes
 
 Pantalla de configuración de la app:
@@ -280,9 +300,9 @@ Pantalla de configuración de la app:
 - Botón para **cambiar contraseña**, que inicia el flujo de actualización a través de Supabase.
 - Gestión de permisos y preferencias básicas.
 
-🖼️ `./assets/screenshots/ajustes.png`  
-🖼️ `./assets/screenshots/ajustes-cambiar-contraseña.png`
-
+🖼️ ![Screenshots de Ajustes](./assets/screenshots/ajustes.png)
+🖼️ ![Screenshots de cambiar contraseña](./assets/screenshots/cambioClave.png)
+🖼️ ![Screenshots de cambiar contraseña](./assets/screenshots/cambioClave2.png)
 ---
 
 ## 🌟 Funcionalidades extra destacadas
