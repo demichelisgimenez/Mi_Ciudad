@@ -74,50 +74,6 @@ export const ajustesStyles = StyleSheet.create({
     color: colors.textSecondary || "#6b7280",
   },
 
-  themeRow: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    alignItems: "center",
-    marginTop: sizes.sm || 8,
-  },
-
-  themeOption: {
-    flexDirection: "column",
-    alignItems: "center",
-    minWidth: 70,
-  },
-
-  themeDot: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: "transparent",
-  },
-
-  themeDot_blue: {
-    backgroundColor: colors.primary || "#3b82f6",
-  },
-  themeDot_dark: {
-    backgroundColor: colors.dark || "#1f2937",
-  },
-  themeDot_light: {
-    backgroundColor: colors.surfaceAlt || "#f9fafb",
-    borderWidth: 2,
-    borderColor: colors.border || "#e5e7eb",
-  },
-
-  themeDotSelected: {
-    borderColor: colors.selection || "#374151",
-    transform: [{ scale: 1.08 }],
-  },
-
-  themeOptionLabel: {
-    marginTop: 6,
-    fontSize: sizes.xs || 12,
-    color: colors.textMuted || "#4b5563",
-  },
-
   flexSpacer: {
     flex: 1,
   },

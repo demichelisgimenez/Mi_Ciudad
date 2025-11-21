@@ -15,13 +15,10 @@ import Button from "@components/Button";
 import { colors, sizes } from "@utils";
 import { setNotificationsEnabled } from "@utils/notifications";
 
-type ThemeChoice = "blue" | "dark" | "light";
-
 export default function Ajustes() {
   const { state, dispatch } = useAuth();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const [theme, setTheme] = useState<ThemeChoice>("blue");
   const [notifications, setNotifications] = useState<boolean>(true);
   const [signingOut, setSigningOut] = useState(false);
   const [changingPassword, setChangingPassword] = useState(false);
@@ -133,49 +130,9 @@ export default function Ajustes() {
     }
   };
 
-  const ThemeOption = ({ label, value }: { label: string; value: ThemeChoice }) => {
-    const isSelected = theme === value;
-    return (
-      <TouchableOpacity
-        activeOpacity={0.9}
-        onPress={() => setTheme(value)}
-        style={styles.themeOption}
-      >
-        <View
-          style={[
-            styles.themeDot,
-            value === "blue" && styles.themeDot_blue,
-            value === "dark" && styles.themeDot_dark,
-            value === "light" && styles.themeDot_light,
-            isSelected && styles.themeDotSelected,
-          ]}
-        />
-        <Text style={styles.themeOptionLabel}>{label}</Text>
-      </TouchableOpacity>
-    );
-  };
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Ajustes</Text>
-
-      <View style={styles.card}>
-        <View style={styles.cardHeaderRow}>
-          <View style={styles.iconCircle}>
-            <Ionicons name="cellular-outline" size={18} style={styles.iconNeutral} />
-          </View>
-          <View style={styles.cardHeaderText}>
-            <Text style={styles.cardTitle}>Tema</Text>
-            <Text style={styles.cardSubtitle}>Personaliza la apariencia</Text>
-          </View>
-        </View>
-
-        <View style={styles.themeRow}>
-          <ThemeOption label="Azul" value="blue" />
-          <ThemeOption label="Oscuro" value="dark" />
-          <ThemeOption label="Claro" value="light" />
-        </View>
-      </View>
 
       <View style={styles.card}>
         <View style={styles.cardHeaderRow}>
@@ -254,13 +211,7 @@ export default function Ajustes() {
                 onChangeText={setConfirmPassword}
               />
 
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                 <View style={{ flex: 1, marginRight: 8 }}>
                   <Button
                     title={updatingPassword ? "Guardando..." : "Guardar"}
@@ -289,13 +240,7 @@ export default function Ajustes() {
                   }}
                   disabled={updatingPassword}
                 >
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      fontWeight: "500",
-                      color: colors.textSecondary || "#555",
-                    }}
-                  >
+                  <Text style={{ fontSize: 15, fontWeight: "500", color: colors.textSecondary || "#555" }}>
                     Cancelar
                   </Text>
                 </TouchableOpacity>
@@ -305,29 +250,12 @@ export default function Ajustes() {
             <TouchableOpacity
               activeOpacity={0.9}
               onPress={() => setChangingPassword(true)}
-              style={{
-                marginTop: sizes.base || 16,
-                flexDirection: "row",
-                alignItems: "center",
-              }}
+              style={{ marginTop: sizes.base || 16, flexDirection: "row", alignItems: "center" }}
             >
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: "600",
-                  color: colors.link || "#268fc0ff",
-                }}
-              >
+              <Text style={{ fontSize: 15, fontWeight: "600", color: colors.link || "#268fc0ff" }}>
                 Cambiar contraseña
               </Text>
-              <Ionicons
-                name="chevron-forward"
-                size={18}
-                style={{
-                  marginLeft: 6,
-                  color: colors.link || "#268fc0ff",
-                }}
-              />
+              <Ionicons name="chevron-forward" size={18} style={{ marginLeft: 6, color: colors.link || "#268fc0ff" }} />
             </TouchableOpacity>
           )}
         </View>
@@ -346,9 +274,7 @@ export default function Ajustes() {
             </View>
 
             <View style={styles.cardHeaderText}>
-              <Text style={styles.logoutTitle}>
-                {signingOut ? "Cerrando sesión..." : "Cerrar Sesión"}
-              </Text>
+              <Text style={styles.logoutTitle}>{signingOut ? "Cerrando sesión..." : "Cerrar Sesión"}</Text>
               <Text style={styles.logoutSubtitle}>Salir de tu cuenta</Text>
             </View>
 
@@ -357,11 +283,7 @@ export default function Ajustes() {
           </View>
         </TouchableOpacity>
       ) : (
-        <TouchableOpacity
-          activeOpacity={0.9}
-          onPress={handleLogin}
-          style={[styles.card, styles.loginCard]}
-        >
+        <TouchableOpacity activeOpacity={0.9} onPress={handleLogin} style={[styles.card, styles.loginCard]}>
           <View style={styles.logoutRow}>
             <View style={[styles.iconCircle, styles.loginIconCircle]}>
               <Ionicons name="log-in-outline" size={18} style={styles.iconLogin} />
